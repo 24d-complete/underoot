@@ -4,7 +4,7 @@
 **Underoot**
 
 ## Tagline
-**Full Fledged IDE for LaTeX for Writers**
+**Full Fledged LaTeX IDE for Writers**
 
 ## Visual Identity
 *   **Logo Strategy**: Temporarily retain VSCodium branding/logo for the initial phases (Stage 0.x).
