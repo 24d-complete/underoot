@@ -46,8 +46,8 @@ else
    export PLATFORM="${VSCODE_ARCH}"
 fi
 
-sed -i "s|@@PRODUCT_UPGRADE_CODE@@|${PRODUCT_UPGRADE_CODE}|g" .\\includes\\vscodium-variables.wxi
-sed -i "s|@@PRODUCT_NAME@@|${PRODUCT_NAME}|g" .\\vscodium.xsl
+sed -i "s|@@PRODUCT_UPGRADE_CODE@@|${PRODUCT_UPGRADE_CODE}|g" ./includes/vscodium-variables.wxi
+sed -i "s|@@PRODUCT_NAME@@|${PRODUCT_NAME}|g" ./vscodium.xsl
 
 find i18n -name '*.wxl' -print0 | xargs -0 sed -i "s|@@PRODUCT_NAME@@|${PRODUCT_NAME}|g"
 
