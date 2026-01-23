@@ -230,20 +230,20 @@ jobs:
           retention-days: 1
         if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
-      - name: Signing
-        uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
-          signing-policy-slug: ${{ secrets.SIGNPATH_POLICY_SLUG }}
-          github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
-          artifact-configuration-slug: ${{ matrix.vscode_arch }}
-          wait-for-completion: true
-          # 8h to manually approve the request
-          wait-for-completion-timeout-in-seconds: 28800
-          output-artifact-directory: assets/
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+      # - name: Signing
+      #   uses: signpath/github-action-submit-signing-request@v2
+      #   with:
+      #     api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+      #     organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+      #     project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
+      #     signing-policy-slug: ${{ secrets.SIGNPATH_POLICY_SLUG }}
+      #     github-artifact-id: ${{ steps.upload-unsigned-artifacts.outputs.artifact-id }}
+      #     artifact-configuration-slug: ${{ matrix.vscode_arch }}
+      #     wait-for-completion: true
+      #     # 8h to manually approve the request
+      #     wait-for-completion-timeout-in-seconds: 28800
+      #     output-artifact-directory: assets/
+      #   if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
 
       - name: Prepare checksums
         run: ./prepare_checksums.sh
@@ -255,13 +255,13 @@ jobs:
         run: ./release.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: Update versions repo
-        env:
-          FORCE_UPDATE: ${{ github.event.inputs.force_version }}
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
-        run: ./update_version.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
+      # - name: Update versions repo
+      #   env:
+      #     FORCE_UPDATE: ${{ github.event.inputs.force_version }}
+      #     GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+      #     GITHUB_USERNAME: ${{ github.repository_owner }}
+      #   run: ./update_version.sh
+      #   if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
       - name: Upload assets
         uses: actions/upload-artifact@v6
@@ -271,32 +271,32 @@ jobs:
           retention-days: 3
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
-  winget:
-    needs: build
-    runs-on: windows-2022
-    defaults:
-      run:
-        shell: bash
-    env:
-      APP_IDENTIFIER: VSCodium.VSCodium
-    if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
-
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ env.GITHUB_BRANCH }}
-
-      - name: Check version
-        run: ./stores/winget/check_version.sh
-        env:
-          RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
-
-      - name: Release to WinGet
-        uses: vedantmgoyal9/winget-releaser@main
-        with:
-          identifier: ${{ env.APP_IDENTIFIER }}
-          version: ${{ env.RELEASE_VERSION }}
-          release-tag: ${{ env.RELEASE_VERSION }}
-          installers-regex: '\.exe$' # only .exe files
-          token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-        if: env.SHOULD_DEPLOY == 'yes'
+#   winget:
+#     needs: build
+#     runs-on: windows-2022
+#     defaults:
+#       run:
+#         shell: bash
+#     env:
+#       APP_IDENTIFIER: VSCodium.VSCodium
+#     if: needs.build.outputs.SHOULD_DEPLOY == 'yes'
+#
+#     steps:
+#       - uses: actions/checkout@v6
+#         with:
+#           ref: ${{ env.GITHUB_BRANCH }}
+#
+#       - name: Check version
+#         run: ./stores/winget/check_version.sh
+#         env:
+#           RELEASE_VERSION: ${{ needs.build.outputs.RELEASE_VERSION }}
+#
+#       - name: Release to WinGet
+#         uses: vedantmgoyal9/winget-releaser@main
+#         with:
+#           identifier: ${{ env.APP_IDENTIFIER }}
+#           version: ${{ env.RELEASE_VERSION }}
+#           release-tag: ${{ env.RELEASE_VERSION }}
+#           installers-regex: '\.exe$' # only .exe files
+#           token: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+#         if: env.SHOULD_DEPLOY == 'yes'
