@@ -218,7 +218,7 @@ jobs:
 
       - name: Prepare assets
         run: ./prepare_assets.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true' || github.event_name == 'push')
 
       - name: Upload unsigned artifacts
         id: upload-unsigned-artifacts
@@ -229,7 +229,7 @@ jobs:
             assets/*.exe
             assets/*.msi
           retention-days: 1
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true' || github.event_name == 'push')
 
       # - name: Signing
       #   uses: signpath/github-action-submit-signing-request@v2
@@ -244,11 +244,11 @@ jobs:
       #     # 8h to manually approve the request
       #     wait-for-completion-timeout-in-seconds: 28800
       #     output-artifact-directory: assets/
-      #   if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+      #   if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true' || github.event_name == 'push')
 
       - name: Prepare checksums
         run: ./prepare_checksums.sh
-        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true')
+        if: env.SHOULD_BUILD == 'yes' && (env.SHOULD_DEPLOY == 'yes' || github.event.inputs.generate_assets == 'true' || github.event_name == 'push')
 
       - name: Release
         env:
@@ -270,7 +270,7 @@ jobs:
           name: bin-${{ matrix.vscode_arch }}
           path: assets/
           retention-days: 3
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && (github.event.inputs.generate_assets == 'true' || github.event_name == 'push')
 
 #   winget:
 #     needs: build
