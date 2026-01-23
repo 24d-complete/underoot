@@ -1,0 +1,11 @@
+﻿diff --git a/.gitignore b/.gitignore
+index 92971a7..f8389f9 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,6 @@ product.overrides.json
+ *.tsbuildinfo
+ .vscode-test
+ vscode-telemetry-docs/
++test-data-latex-test-0
++test-data-logging
++test-data-minimal-debug
