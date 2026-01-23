@@ -56,3 +56,20 @@ You might wonder: *How do we have a git repo inside another git repo?*
 ### Best Practice
 Always treat `vscode/` as a **scratchpad**. It can be deleted and recreated at any time by the build scripts. Your "real" work is only safe once it is saved as a `.patch` in the parent `underoot` repo.
 
+## Local Development (Running the Code)
+To test your changes locally without running the full CI/CD pipeline:
+
+1.  **Navigate to Child**: `cd vscode`
+2.  **Install Dependencies**:
+    *   **Use `yarn`**, NOT `npm`.
+    *   **Why?**: Microsoft's VS Code repository uses `yarn.lock`. Using `npm install` will generate a `package-lock.json` and cause conflicts or missing dependencies.
+    *   Command: `yarn`
+3.  **Start Compilation**:
+    *   Command: `yarn watch`
+    *   This runs the Transpiler (TypeScript -> JavaScript) in watch mode. Wait until it says "finished with 0 errors".
+4.  **Launch**:
+    *   **Windows**: `.\scripts\code.bat`
+    *   **Mac/Linux**: `./scripts/code.sh`
+    *   This launches the Electron instance with your local source code.
+
+
