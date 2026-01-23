@@ -34,3 +34,25 @@ Our build scripts (specifically `prepare_vscode.sh`) do the following automatica
 *   **Do we push `vscode/`?** NO.
 *   **Do we push changes?** YES, but only as `.patch` files in the `patches/` folder.
 *   **Can we use git locally?** YES, use it inside `vscode/` to manage your work, but extracting the diff is the final step.
+
+## Git Repository Separation
+You might wonder: *How do we have a git repo inside another git repo?*
+
+1.  **The Parent (`underoot`)**:
+    *   This is the main repository you are currently in.
+    *   It tracks `build scripts`, `patches`, `docs`, and `assets`.
+    *   **Crucially**, it contains a `.gitignore` file with the line:
+        ```gitignore
+        /vscode*
+        ```
+    *   This tells the parent git to **completely ignore** the existence of the `vscode/` directory. It doesn't care if it's a file, a folder, or another git repo.
+
+2.  **The Child (`vscode`)**:
+    *   When you run `get_repo.sh` (or `git init` inside `vscode/`), a new `.git` folder is created at `underoot/vscode/.git`.
+    *   Because the parent ignores this folder, the two repositories operate independently.
+    *   Commands run in `underoot/` affect the parent.
+    *   Commands run in `underoot/vscode/` affect the child.
+
+### Best Practice
+Always treat `vscode/` as a **scratchpad**. It can be deleted and recreated at any time by the build scripts. Your "real" work is only safe once it is saved as a `.patch` in the parent `underoot` repo.
+
