@@ -1,0 +1,40 @@
+name: debug-msi
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'build/windows/msi/build.sh'
+      - '.github/workflows/debug-msi.yml'
+
+jobs:
+  debug-msi-script:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+    env:
+      APP_NAME: VSCodium
+      VSCODE_ARCH: x64
+      RELEASE_VERSION: 1.0.0
+      GITHUB_BRANCH: main
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Mock Environment
+        run: |
+          mkdir -p vscode
+          mkdir -p "VSCode-win32-x64"
+          echo "Mock build"
+
+      - name: Debug Directory and Permissions
+        run: |
+          ls -R build/windows/msi
+          ls -l build/windows/msi/includes/vscodium-variables.wxi
+
+      - name: Run MSI Build Script (Reproduce Error)
+        run: |
+          cd vscode
+          # Mimic prepare_assets.sh sourcing
+          . ../build/windows/msi/build.sh "debug-run"
