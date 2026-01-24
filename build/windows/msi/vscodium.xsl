@@ -13,9 +13,11 @@
 
   <xsl:key name="vId1ToReplace" match="wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]]" use="@Id"/>
   <xsl:template match="node()[key('vId1ToReplace', @Id)]">
+    <xsl:variable name="myId" select="@Id" />
+    <xsl:variable name="comp" select="key('vId1ToReplace', $myId)[self::wi:Component]" /> 
     <xsl:copy>
       <xsl:choose>
-        <xsl:when test="not(preceding::wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]])">
+        <xsl:when test="not($comp/preceding::wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]])">
           <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
           <xsl:copy-of select="@*[name()!='Id']"/>
         </xsl:when>
@@ -379,9 +381,11 @@
 
   <xsl:key name="vId24ToReplace" match="wi:Component[wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]]" use="@Id"/>
   <xsl:template match="node()[key('vId24ToReplace', @Id)]">
+    <xsl:variable name="myId" select="@Id" />
+    <xsl:variable name="comp" select="key('vId24ToReplace', $myId)[self::wi:Component]" />
     <xsl:copy>
       <xsl:choose>
-        <xsl:when test="not(preceding::wi:Component[wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]])">
+        <xsl:when test="not($comp/preceding::wi:Component[wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]])">
           <xsl:attribute name="Id">SHELL.ICO</xsl:attribute>
           <xsl:copy-of select="@*[name()!='Id']"/>
         </xsl:when>
