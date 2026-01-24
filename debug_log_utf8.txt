@@ -1,0 +1,417 @@
+﻿debug-msi-script	Set up job	∩╗┐2026-01-24T01:50:57.9928970Z Current runner version: '2.331.0'
+debug-msi-script	Set up job	2026-01-24T01:50:57.9979370Z ##[group]Runner Image Provisioner
+debug-msi-script	Set up job	2026-01-24T01:50:57.9980118Z Hosted Compute Agent
+debug-msi-script	Set up job	2026-01-24T01:50:57.9980636Z Version: 20260115.477
+debug-msi-script	Set up job	2026-01-24T01:50:57.9981129Z Commit: 4b342d620503cbe250a3154040964899ea7c9b00
+debug-msi-script	Set up job	2026-01-24T01:50:57.9981789Z Build Date: 2026-01-15T22:32:41Z
+debug-msi-script	Set up job	2026-01-24T01:50:57.9982383Z Worker ID: {182699a5-528a-489c-93c9-b5dd0739e90d}
+debug-msi-script	Set up job	2026-01-24T01:50:57.9982962Z Azure Region: westus
+debug-msi-script	Set up job	2026-01-24T01:50:57.9983423Z ##[endgroup]
+debug-msi-script	Set up job	2026-01-24T01:50:57.9984686Z ##[group]Operating System
+debug-msi-script	Set up job	2026-01-24T01:50:57.9985226Z Microsoft Windows Server 2022
+debug-msi-script	Set up job	2026-01-24T01:50:57.9985699Z 10.0.20348
+debug-msi-script	Set up job	2026-01-24T01:50:57.9986106Z Datacenter
+debug-msi-script	Set up job	2026-01-24T01:50:57.9986543Z ##[endgroup]
+debug-msi-script	Set up job	2026-01-24T01:50:57.9986958Z ##[group]Runner Image
+debug-msi-script	Set up job	2026-01-24T01:50:57.9987414Z Image: windows-2022
+debug-msi-script	Set up job	2026-01-24T01:50:57.9987833Z Version: 20260119.12.1
+debug-msi-script	Set up job	2026-01-24T01:50:57.9988735Z Included Software: https://github.com/actions/runner-images/blob/win22/20260119.12/images/windows/Windows2022-Readme.md
+debug-msi-script	Set up job	2026-01-24T01:50:57.9990380Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20260119.12
+debug-msi-script	Set up job	2026-01-24T01:50:57.9991181Z ##[endgroup]
+debug-msi-script	Set up job	2026-01-24T01:50:57.9992140Z ##[group]GITHUB_TOKEN Permissions
+debug-msi-script	Set up job	2026-01-24T01:50:57.9993828Z Contents: read
+debug-msi-script	Set up job	2026-01-24T01:50:57.9994445Z Metadata: read
+debug-msi-script	Set up job	2026-01-24T01:50:57.9994904Z Packages: read
+debug-msi-script	Set up job	2026-01-24T01:50:57.9995331Z ##[endgroup]
+debug-msi-script	Set up job	2026-01-24T01:50:57.9997200Z Secret source: Actions
+debug-msi-script	Set up job	2026-01-24T01:50:57.9997808Z Prepare workflow directory
+debug-msi-script	Set up job	2026-01-24T01:50:58.0437797Z Prepare all required actions
+debug-msi-script	Set up job	2026-01-24T01:50:58.0492628Z Getting action download info
+debug-msi-script	Set up job	2026-01-24T01:50:58.4721063Z Download action repository 'actions/checkout@v6' (SHA:8e8c483db84b4bee98b60c0593521ed34d9990e8)
+debug-msi-script	Set up job	2026-01-24T01:50:58.7137778Z Complete job name: debug-msi-script
+debug-msi-script	Run actions/checkout@v6	∩╗┐2026-01-24T01:50:58.8831915Z ##[group]Run actions/checkout@v6
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8833244Z with:
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8833749Z   repository: 24d-complete/underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8834605Z   token: ***
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8834982Z   ssh-strict: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8835356Z   ssh-user: git
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8835746Z   persist-credentials: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8836184Z   clean: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8836580Z   sparse-checkout-cone-mode: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8837047Z   fetch-depth: 1
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8837418Z   fetch-tags: false
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8837798Z   show-progress: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8838190Z   lfs: false
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8838550Z   submodules: false
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8838939Z   set-safe-directory: true
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8839548Z env:
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8839908Z   APP_NAME: VSCodium
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8840295Z   VSCODE_ARCH: x64
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8840686Z   RELEASE_VERSION: 1.0.0
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8841093Z   GITHUB_BRANCH: main
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:58.8841475Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.0136002Z Syncing repository: 24d-complete/underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.0137814Z ##[group]Getting Git version info
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.0138502Z Working directory is 'D:\a\underoot\underoot'
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.1292832Z [command]"C:\Program Files\Git\bin\git.exe" version
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5196633Z git version 2.52.0.windows.1
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5240497Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5257565Z Temporarily overriding HOME='D:\a\_temp\7cb60c6a-f5db-47e5-9e24-c5dd3c7ecebe' before making global git config changes
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5259226Z Adding repository directory to the temporary git global config as a safe directory
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5268262Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\underoot\underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5924761Z Deleting the contents of 'D:\a\underoot\underoot'
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5930267Z ##[group]Initializing the repository
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.5939281Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\underoot\underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.6574362Z Initialized empty Git repository in D:/a/underoot/underoot/.git/
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.6612456Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/24d-complete/underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7177722Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7178877Z ##[group]Disabling automatic garbage collection
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7187871Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7410740Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7412215Z ##[group]Setting up auth
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7413284Z Removing SSH command configuration
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7423594Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:50:59.7682051Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.1768365Z Removing HTTP extra header
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.1778029Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.2008922Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.6319204Z Removing includeIf entries pointing to credentials config files
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.6329132Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:01.6551931Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.1017160Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.1259515Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/underoot/underoot/.git.path D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.1491113Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/underoot/underoot/.git/worktrees/*.path D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.1763544Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.1996127Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.2276749Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.2277441Z ##[group]Fetching the repository
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:02.2291685Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +324accf5b435235ee54cee5a5f3a9734f9e4a922:refs/remotes/origin/debug/msi-fix
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5709857Z From https://github.com/24d-complete/underoot
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5711666Z  * [new ref]         324accf5b435235ee54cee5a5f3a9734f9e4a922 -> origin/debug/msi-fix
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5945010Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5945406Z ##[group]Determining the checkout info
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5948810Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.5962298Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.6335577Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.6564333Z ##[group]Checking out the ref
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.6573739Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B debug/msi-fix refs/remotes/origin/debug/msi-fix
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.8820762Z branch 'debug/msi-fix' set up to track 'origin/debug/msi-fix'.
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.8827949Z Switched to a new branch 'debug/msi-fix'
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.8875345Z ##[endgroup]
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.9219040Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+debug-msi-script	Run actions/checkout@v6	2026-01-24T01:51:03.9428533Z 324accf5b435235ee54cee5a5f3a9734f9e4a922
+debug-msi-script	Setup Mock Environment	∩╗┐2026-01-24T01:51:03.9741945Z ##[group]Run mkdir -p vscode
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9742375Z [36;1mmkdir -p vscode[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9742744Z [36;1mmkdir -p "VSCode-win32-x64/resources/app/resources/win32"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9743132Z [36;1mtouch "VSCode-win32-x64/${APP_NAME}.exe"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9743506Z [36;1mtouch "VSCode-win32-x64/resources/app/resources/win32/shell.ico"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9743845Z [36;1m[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9744051Z [36;1m# Create dummy icon for wxs reference (IconDir)[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9744360Z [36;1mmkdir -p "src/stable/resources/win32"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9744656Z [36;1mtouch "src/stable/resources/win32/code.ico"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9744905Z [36;1m[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9745091Z [36;1m# Create setup resources[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9745360Z [36;1mmkdir -p "build/windows/msi/resources/stable"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9745618Z [36;1m[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9745777Z [36;1mecho "Mock build populated"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9746011Z [36;1mls -R "VSCode-win32-x64"[0m
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9764968Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9765374Z env:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9765529Z   APP_NAME: VSCodium
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9765722Z   VSCODE_ARCH: x64
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9765889Z   RELEASE_VERSION: 1.0.0
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9766078Z   GITHUB_BRANCH: main
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:03.9766248Z ##[endgroup]
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.2780683Z Mock build populated
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3108783Z VSCode-win32-x64:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3109131Z VSCodium.exe
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3109337Z resources
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3109455Z 
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3109553Z VSCode-win32-x64/resources:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3109886Z app
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3110054Z 
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3110184Z VSCode-win32-x64/resources/app:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3110608Z resources
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3110786Z 
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3111341Z VSCode-win32-x64/resources/app/resources:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3111840Z win32
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3111955Z 
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3112114Z VSCode-win32-x64/resources/app/resources/win32:
+debug-msi-script	Setup Mock Environment	2026-01-24T01:51:04.3112530Z shell.ico
+debug-msi-script	Debug Directory and Permissions	∩╗┐2026-01-24T01:51:04.3293806Z ##[group]Run ls -R build/windows/msi
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3294273Z [36;1mls -R build/windows/msi[0m
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3294680Z [36;1mls -l build/windows/msi/includes/vscodium-variables.wxi[0m
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3306640Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307026Z env:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307191Z   APP_NAME: VSCodium
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307383Z   VSCODE_ARCH: x64
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307565Z   RELEASE_VERSION: 1.0.0
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307754Z   GITHUB_BRANCH: main
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3307938Z ##[endgroup]
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3706844Z build/windows/msi:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3707259Z build-updates-disabled.sh
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3707611Z build.sh
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3707851Z i18n
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3708074Z includes
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3708311Z resources
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3708547Z vscodium.wxs
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3708814Z vscodium.xsl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3708982Z 
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3709097Z build/windows/msi/i18n:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3709520Z vscodium.de-de.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3709846Z vscodium.en-us.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3710230Z vscodium.es-es.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3710592Z vscodium.fr-fr.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3710888Z vscodium.it-it.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3711171Z vscodium.ja-jp.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3711452Z vscodium.ko-kr.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3711741Z vscodium.ru-ru.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3712038Z vscodium.zh-cn.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3712313Z vscodium.zh-tw.wxl
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3712493Z 
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3712609Z build/windows/msi/includes:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3713222Z vscodium-variables.wxi
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3713430Z 
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3713556Z build/windows/msi/resources:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3713877Z insider
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3714096Z stable
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3714233Z 
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3714371Z build/windows/msi/resources/insider:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3714752Z wix-banner.bmp
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3715028Z wix-dialog.bmp
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3715187Z 
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3715328Z build/windows/msi/resources/stable:
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3715692Z wix-banner.bmp
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3715950Z wix-dialog.bmp
+debug-msi-script	Debug Directory and Permissions	2026-01-24T01:51:04.3888673Z -rw-r--r-- 1 runneradmin 197121 932 Jan 24 01:51 build/windows/msi/includes/vscodium-variables.wxi
+debug-msi-script	Run MSI Build Script (Reproduce Error)	∩╗┐2026-01-24T01:51:04.4030517Z ##[group]Run cd vscode
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4030818Z [36;1mcd vscode[0m
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4031045Z [36;1m# Mimic prepare_assets.sh sourcing[0m
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4031340Z [36;1m. ../build/windows/msi/build.sh "debug-run"[0m
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4042718Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4043121Z env:
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4043278Z   APP_NAME: VSCodium
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4043453Z   VSCODE_ARCH: x64
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4043630Z   RELEASE_VERSION: 1.0.0
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4043823Z   GITHUB_BRANCH: main
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4044001Z ##[endgroup]
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4382107Z +++ pwd
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4389972Z ++ CALLER_DIR=/d/a/underoot/underoot/vscode
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4461016Z +++ dirname ../build/windows/msi/build.sh
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4667926Z ++ cd ../build/windows/msi
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4673906Z ++ WIN_SDK_MAJOR_VERSION=10
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4674455Z ++ WIN_SDK_FULL_VERSION=10.0.17763.0
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4674901Z ++ [[ '' == \i\n\s\i\d\e\r ]]
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4679590Z ++ PRODUCT_NAME=VSCodium
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4680299Z ++ PRODUCT_CODE=VSCodium
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4680853Z ++ PRODUCT_UPGRADE_CODE=965370CD-253C-4720-82FC-2E6B02A53808
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4681270Z ++ ICON_DIR='..\..\..\src\stable\resources\win32'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4681576Z ++ SETUP_RESOURCES_DIR='.\resources\stable'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.4757341Z +++ powershell.exe -command '[guid]::NewGuid().ToString().ToUpper()'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6469839Z ++ PRODUCT_ID=62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6470533Z ++ PRODUCT_ID=62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6471085Z ++ CULTURE=en-us
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6471413Z ++ LANGIDS=1033
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6471873Z ++ SETUP_RELEASE_DIR='.\releasedir'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6472379Z ++ BINARY_DIR='..\..\..\VSCode-win32-x64'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6472842Z ++ LICENSE_DIR='..\..\..\vscode'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6619807Z +++ env
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6688165Z +++ sed -n 's/^ProgramFiles(x86)=//p'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6774757Z ++ PROGRAM_FILES_86='C:\Program Files (x86)'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6775644Z ++ [[ -z debug-run ]]
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6776210Z ++ OUTPUT_BASE_FILENAME=VSCodium-x64-debug-run-1.0.0
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6776787Z ++ [[ x64 == \i\a\3\2 ]]
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6777390Z ++ export PLATFORM=x64
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6777887Z ++ PLATFORM=x64
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6778696Z ++ sed -i 's|@@PRODUCT_UPGRADE_CODE@@|965370CD-253C-4720-82FC-2E6B02A53808|g' ./includes/vscodium-variables.wxi
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.6944405Z ++ sed -i 's|@@PRODUCT_NAME@@|VSCodium|g' ./vscodium.xsl
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.7191610Z ++ find i18n -name '*.wxl' -print0
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.7274669Z ++ xargs -0 sed -i 's|@@PRODUCT_NAME@@|VSCodium|g'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:04.8184243Z ++ 'C:\Program Files (x86)\WiX Toolset v3.14\bin\heat.exe' dir '..\..\..\VSCode-win32-x64' -out Files-VSCodium-x64-debug-run-1.0.0.wxs -t vscodium.xsl -gg -sfrag -scom -sreg -srd -ke -cg AppFiles -var var.ManufacturerName -var var.AppName -var var.AppCodeName -var var.ProductVersion -var var.IconDir -var var.LicenseDir -var var.BinaryDir -dr APPLICATIONFOLDER -platform x64
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:09.8423208Z Windows Installer XML Toolset Toolset Harvester version 3.14.1.8722
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:09.8423949Z Copyright (c) .NET Foundation and contributors. All rights reserved.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:09.8424650Z 
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5005503Z ++ echo 'DEBUG: Content of generated WXS file:'
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5006137Z ++ cat Files-VSCodium-x64-debug-run-1.0.0.wxs
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5006607Z DEBUG: Content of generated WXS file:
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5318459Z ∩╗┐<?xml version="1.0" encoding="utf-8"?>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5319081Z <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5319530Z     <Fragment>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5319820Z         <DirectoryRef Id="APPLICATIONFOLDER">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5320477Z             <Component Id="VSCODIUM.EXE" Guid="{4F41105B-D447-4252-81C1-41A5FCBC0C59}">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5321757Z                 <File Id="VSCODIUM.EXE" KeyPath="yes" Source="$(var.BinaryDir)\VSCodium.exe" />
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5326098Z             </Component>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5326634Z             <Directory Id="dirD51FBD42A867274D15CA506A46837A01" Name="resources">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5327458Z                 <Directory Id="dir1CAD107F29C4B36FF1EA48C87106D49B" Name="app">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5328267Z                     <Directory Id="dir84FF8E7C838B876CD89FC1B67F1F47FE" Name="resources">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5329084Z                         <Directory Id="dir3D3F36003D5DC62CE4D9E5B0BFB2FAB1" Name="win32">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5329880Z                             <Component Id="SHELL.ICO" Guid="{00C17CB8-F51B-4158-B634-B7F18C2B2294}">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5330924Z                                 <File Id="SHELL.ICO" KeyPath="yes" Source="$(var.BinaryDir)\resources\app\resources\win32\shell.ico" />
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5331817Z                             </Component>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5332296Z                         </Directory>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5332663Z                     </Directory>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5333014Z                 </Directory>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5333350Z             </Directory>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5333670Z         </DirectoryRef>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5333979Z     </Fragment>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5334242Z     <Fragment>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5334536Z         <ComponentGroup Id="AppFiles">
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5334979Z             <ComponentRef Id="VSCODIUM.EXE" />
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5335432Z             <ComponentRef Id="SHELL.ICO" />
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5335855Z         </ComponentGroup>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5336179Z     </Fragment>
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.5339504Z ++ 'C:\Program Files (x86)\WiX Toolset v3.14\bin\candle.exe' -arch x64 vscodium.wxs Files-VSCodium-x64-debug-run-1.0.0.wxs -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -dManufacturerName=VSCodium -dAppCodeName=VSCodium -dAppName=VSCodium -dProductVersion=1.0.0 -dProductId=62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4 '-dBinaryDir=..\..\..\VSCode-win32-x64' '-dIconDir=..\..\..\src\stable\resources\win32' '-dLicenseDir=..\..\..\vscode' '-dSetupResourcesDir=.\resources\stable' -dCulture=en-us
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.6091832Z </Wix>Windows Installer XML Toolset Compiler version 3.14.1.8722
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.6092747Z Copyright (c) .NET Foundation and contributors. All rights reserved.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.6093246Z 
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:11.9158582Z vscodium.wxs
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:12.1988936Z Files-VSCodium-x64-debug-run-1.0.0.wxs
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:12.2218379Z ++ 'C:\Program Files (x86)\WiX Toolset v3.14\bin\light.exe' vscodium.wixobj Files-VSCodium-x64-debug-run-1.0.0.wixobj -ext WixUIExtension -ext WixUtilExtension -ext WixNetFxExtension -spdb -cc '/tmp\vscodium-cab-cache\x64' -out '.\releasedir\VSCodium-x64-debug-run-1.0.0.msi' -loc 'i18n\vscodium.en-us.wxl' -cultures:en-us -sice:ICE60 -sice:ICE69
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:12.3839843Z Windows Installer XML Toolset Linker version 3.14.1.8722
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:12.3840750Z Copyright (c) .NET Foundation and contributors. All rights reserved.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:12.3841167Z 
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0315803Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(82) : error LGHT0094 : Unresolved reference to symbol 'File:XML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0319316Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(90) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0321372Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(98) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0322614Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(146) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0323787Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(154) : error LGHT0094 : Unresolved reference to symbol 'File:BOWER.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0325766Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(162) : error LGHT0094 : Unresolved reference to symbol 'File:C.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0326915Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(170) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0328090Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(178) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0329261Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(186) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0330426Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(194) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0331583Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(202) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0332745Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(210) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0333891Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(218) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0335045Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(226) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0336187Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(234) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0337323Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(242) : error LGHT0094 : Unresolved reference to symbol 'File:CSHARP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0338468Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(250) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0339598Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(258) : error LGHT0094 : Unresolved reference to symbol 'File:XML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0340716Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(266) : error LGHT0094 : Unresolved reference to symbol 'File:CSS.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0341880Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(274) : error LGHT0094 : Unresolved reference to symbol 'File:CSHARP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0343177Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(282) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0344334Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(290) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0345491Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(298) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0346656Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(306) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0348024Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(314) : error LGHT0094 : Unresolved reference to symbol 'File:XML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0349178Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(322) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0350345Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(330) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0351518Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(338) : error LGHT0094 : Unresolved reference to symbol 'File:YAML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0352669Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(346) : error LGHT0094 : Unresolved reference to symbol 'File:YAML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0353825Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(354) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0354989Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(362) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0356157Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(370) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0357325Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(378) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0358479Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(386) : error LGHT0094 : Unresolved reference to symbol 'File:RUBY.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0479112Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(394) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0481498Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(402) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0483813Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(410) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0486009Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(418) : error LGHT0094 : Unresolved reference to symbol 'File:GO.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0488106Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(426) : error LGHT0094 : Unresolved reference to symbol 'File:C.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0490546Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(434) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0492064Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(442) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0493246Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(450) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0494580Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(458) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0495716Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(466) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0496856Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(474) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0497980Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(482) : error LGHT0094 : Unresolved reference to symbol 'File:CPP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0499122Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(490) : error LGHT0094 : Unresolved reference to symbol 'File:CONFIG.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0500272Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(498) : error LGHT0094 : Unresolved reference to symbol 'File:JADE.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0501402Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(506) : error LGHT0094 : Unresolved reference to symbol 'File:JAVA.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0502790Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(514) : error LGHT0094 : Unresolved reference to symbol 'File:JAVA.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0503955Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(522) : error LGHT0094 : Unresolved reference to symbol 'File:JAVASCRIPT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0505123Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(530) : error LGHT0094 : Unresolved reference to symbol 'File:REACT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0506303Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(538) : error LGHT0094 : Unresolved reference to symbol 'File:JAVASCRIPT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0507498Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(546) : error LGHT0094 : Unresolved reference to symbol 'File:JAVASCRIPT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0508651Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(554) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0511260Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(562) : error LGHT0094 : Unresolved reference to symbol 'File:JSON.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0513253Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(570) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0515182Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(578) : error LGHT0094 : Unresolved reference to symbol 'File:LESS.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0517361Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(586) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0519383Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(594) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0521427Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(602) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0524520Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(610) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0526603Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(618) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0528637Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(626) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0530783Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(634) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0533011Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(642) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0534339Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(650) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0535525Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(658) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0536692Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(666) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0537861Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(674) : error LGHT0094 : Unresolved reference to symbol 'File:MARKDOWN.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0539033Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(682) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0540207Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(690) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0541394Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(698) : error LGHT0094 : Unresolved reference to symbol 'File:JAVASCRIPT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0542571Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(706) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0543738Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(714) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0544914Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(722) : error LGHT0094 : Unresolved reference to symbol 'File:PHP.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0546138Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(730) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0548144Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(738) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0549319Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(746) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0550481Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(754) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0551737Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(762) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0552906Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(770) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0554060Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(786) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0555241Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(794) : error LGHT0094 : Unresolved reference to symbol 'File:POWERSHELL.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0556472Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(802) : error LGHT0094 : Unresolved reference to symbol 'File:POWERSHELL.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0557652Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(810) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0558829Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(818) : error LGHT0094 : Unresolved reference to symbol 'File:POWERSHELL.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0560008Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(826) : error LGHT0094 : Unresolved reference to symbol 'File:PYTHON.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0561167Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(834) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0562326Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(842) : error LGHT0094 : Unresolved reference to symbol 'File:RUBY.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0563479Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(866) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0564640Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(874) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0634388Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(882) : error LGHT0094 : Unresolved reference to symbol 'File:SASS.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0636839Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(898) : error LGHT0094 : Unresolved reference to symbol 'File:HTML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0638858Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(906) : error LGHT0094 : Unresolved reference to symbol 'File:SQL.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0641238Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(914) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0643481Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(922) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0645720Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(930) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0647913Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(938) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0650376Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(946) : error LGHT0094 : Unresolved reference to symbol 'File:TYPESCRIPT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0651940Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(954) : error LGHT0094 : Unresolved reference to symbol 'File:REACT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0653125Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(962) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0654317Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(970) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0655467Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(978) : error LGHT0094 : Unresolved reference to symbol 'File:VUE.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0656614Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(986) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0657824Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(994) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0658982Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(1002) : error LGHT0094 : Unresolved reference to symbol 'File:DEFAULT.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0660129Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(1010) : error LGHT0094 : Unresolved reference to symbol 'File:XML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0661262Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(1018) : error LGHT0094 : Unresolved reference to symbol 'File:XML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0662395Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(1026) : error LGHT0094 : Unresolved reference to symbol 'File:YAML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0663534Z D:\a\underoot\underoot\build\windows\msi\vscodium.wxs(1034) : error LGHT0094 : Unresolved reference to symbol 'File:YAML.ICO' in section 'Product:{62F935D0-2ED1-4998-90B1-ABE0D0D2BFE4}'.
+debug-msi-script	Run MSI Build Script (Reproduce Error)	2026-01-24T01:51:13.0673285Z ##[error]Process completed with exit code 94.
+debug-msi-script	Post Run actions/checkout@v6	∩╗┐2026-01-24T01:51:13.0861617Z Post job cleanup.
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.2639662Z [command]"C:\Program Files\Git\bin\git.exe" version
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.2846243Z git version 2.52.0.windows.1
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.2902504Z Temporarily overriding HOME='D:\a\_temp\71ef0189-dc16-4683-bbf6-8d4290536d83' before making global git config changes
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.2903273Z Adding repository directory to the temporary git global config as a safe directory
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.2913077Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\underoot\underoot
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.3136092Z Removing SSH command configuration
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.3145690Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.3384326Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.8208520Z Removing HTTP extra header
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.8218142Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:13.8465409Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2713683Z Removing includeIf entries pointing to credentials config files
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2724990Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2920326Z includeif.gitdir:D:/a/underoot/underoot/.git.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2921031Z includeif.gitdir:D:/a/underoot/underoot/.git/worktrees/*.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2921474Z includeif.gitdir:/github/workspace/.git.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2921863Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.2954037Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/underoot/underoot/.git.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3148787Z D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3184048Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/underoot/underoot/.git.path D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3412703Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/underoot/underoot/.git/worktrees/*.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3610006Z D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3642046Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/underoot/underoot/.git/worktrees/*.path D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.3866200Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4069109Z /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4100470Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4329280Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4524220Z /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4558991Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.4788966Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+debug-msi-script	Post Run actions/checkout@v6	2026-01-24T01:51:14.9480318Z Removing credentials config 'D:\a\_temp\git-credentials-3c16de4f-23ab-433a-9a0e-6a68631ff419.config'
+debug-msi-script	Complete job	∩╗┐2026-01-24T01:51:14.9649547Z Cleaning up orphan processes

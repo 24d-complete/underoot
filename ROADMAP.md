@@ -5,27 +5,27 @@ This document outlines the development phases for **Underoot**, a portable, priv
 ## Stage 0: Base Infrastructure
 *Goal: Establish a working build pipeline for a vanilla VSCodium base.*
 
-- [ ] **Source Import**: Import build scripts and structure from `VSCodium/vscodium`.
-- [ ] **CI/CD Setup**: Configure GitHub Actions to build portable binaries/executables automatically.
-- [ ] **Release Automation**: Automatically publish "Version 0" (Pre-alpha) assets upon successful build.
+- [x] **Source Import**: Import build scripts and structure from `VSCodium/vscodium`.
+- [x] **CI/CD Setup**: Configure GitHub Actions to build portable binaries/executables automatically.
+- [x] **Release Automation**: Automatically publish "Version 0" (Pre-alpha) assets upon successful build.
 
 ## Stage 0.1: Branding
 *Goal: Establish the new identity.*
 
-- [ ] **Rebranding**: Rename application from "VSCodium" to "**Underoot**".
-- [ ] **Visual Identity**: Replace application icons and logos.
+- [x] **Rebranding**: Rename application from "VSCodium" to "**Underoot**".
+- [x] **Visual Identity**: Replace application icons and logos.
 
 ## Stage 0.2: Minimalization
 *Goal: Reduce visual clutter for a focused writing environment.*
 
-- [ ] **Activity Bar**: Remove "Run and Debug" and "Source Control" icons from the primary interface.
-- [ ] **Menu Cleanup**: Hide non-essential developer tools by default.
+- [x] **Activity Bar**: Remove "Run and Debug" and "Source Control" icons from the primary interface.
+- [x] **Menu Cleanup**: Hide non-essential developer tools by default.
 
 ## Stage 1: Basic LaTeX Functionality
 *Goal: Create a "batteries-included" LaTeX environment.*
 
 ### Phase 1: Environment & Core Tools
-- [ ] **Integrated Extension**: Bundle the "LaTeX Workshop" extension by default.
+- [x] **Integrated Extension**: Bundle the "LaTeX Workshop" extension by default.
 - [ ] **Embedded Distribution**: Automatically download and configure a lightweight TeX Live distribution on first launch.
 - [ ] **Zero-Config Setup**: Ensure Underoot can compile `.tex` files immediately without manual path configuration.
 

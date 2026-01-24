@@ -122,6 +122,13 @@ setpath_json "product" "tunnelApplicationConfig" '{}'
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
 
+# Inject LaTeX Workshop (Built-in)
+# Version: 10.12.2
+LATEX_EXT_JSON='{"name": "James-Yu.latex-workshop", "version": "10.12.2", "sha256": "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696", "repo": "https://open-vsx.org/api/James-Yu/latex-workshop/10.12.2/file/James-Yu.latex-workshop-10.12.2.vsix", "metadata": {"id": "james-yu.latex-workshop", "publisherId": {"publisherId": "James-Yu", "publisherName": "James-Yu", "displayName": "James-Yu", "flags": "verified"}, "publisherDisplayName": "James-Yu"}}'
+
+jsonTmp=$( jq --argjson ext "$LATEX_EXT_JSON" '.builtInExtensions += [$ext]' product.json )
+echo "${jsonTmp}" > product.json && unset jsonTmp
+
 cat product.json
 # }}}
 
