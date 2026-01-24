@@ -72,4 +72,19 @@ To test your changes locally without running the full CI/CD pipeline:
     *   **Mac/Linux**: `./scripts/code.sh`
     *   This launches the Electron instance with your local source code.
 
+## CI/CD Branding Configuration
+When rebranding the application (e.g., from "VSCodium" to "Underoot"), it is critical to update the CI/CD pipeline environment variables to match.
 
+### Key Variables
+*   **`APP_NAME`**: The display name of the application (e.g., `Underoot`). Used for shortcuts, installer names, and the executable file description.
+*   **`BINARY_NAME`**: The internal name of the executable (e.g., `underoot`). This determines the filename (e.g., `underoot.exe`, `underoot` binary).
+
+### Where to Update
+These variables are defined in the GitHub Actions workflow files:
+*   `.github/workflows/stable-windows.yml`
+*   `.github/workflows/stable-linux.yml`
+*   `.github/workflows/stable-macos.yml`
+
+### Common Pitfalls
+*   **Hardcoded Values**: Build scripts (like `build/windows/msi/build.sh`) often default to "VSCodium" if `APP_NAME` is not explicitly set or if the script ignores the environment variable. Ensure scripts use `${APP_NAME:-Underoot}`.
+*   **WiX Installer (Windows)**: The `vscodium.xsl` file generates IDs based on file names. If `BINARY_NAME` changes, the harvest process will see `Underoot.exe` instead of `VSCodium.exe`. The XSL transformation logic must align with these dynamic names to avoid "Unresolved reference" errors.
