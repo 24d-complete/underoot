@@ -3,6 +3,9 @@
 
 set -e
 
+# Build icons
+. ../icons/build_icons.sh
+
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   cp -rp src/insider/* vscode/
 else
@@ -12,6 +15,10 @@ fi
 cp -f LICENSE vscode/LICENSE.txt
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
+
+# Download LaTeX Workshop VSIX
+# Version: 10.12.2
+curl -L -o latex-workshop.vsix "https://open-vsx.org/api/James-Yu/latex-workshop/10.12.2/file/James-Yu.latex-workshop-10.12.2.vsix"
 
 { set +x; } 2>/dev/null
 
@@ -124,7 +131,7 @@ echo "${jsonTmp}" > product.json && unset jsonTmp
 
 # Inject LaTeX Workshop (Built-in)
 # Version: 10.12.2
-LATEX_EXT_JSON='{"name": "James-Yu.latex-workshop", "version": "10.12.2", "sha256": "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696", "repo": "https://open-vsx.org/api/James-Yu/latex-workshop/10.12.2/file/James-Yu.latex-workshop-10.12.2.vsix", "metadata": {"id": "james-yu.latex-workshop", "publisherId": {"publisherId": "James-Yu", "publisherName": "James-Yu", "displayName": "James-Yu", "flags": "verified"}, "publisherDisplayName": "James-Yu"}}'
+LATEX_EXT_JSON='{"name": "James-Yu.latex-workshop", "version": "10.12.2", "sha256": "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696", "vsix": "latex-workshop.vsix", "metadata": {"id": "james-yu.latex-workshop", "publisherId": {"publisherId": "James-Yu", "publisherName": "James-Yu", "displayName": "James-Yu", "flags": "verified"}, "publisherDisplayName": "James-Yu"}}'
 
 jsonTmp=$( jq --argjson ext "$LATEX_EXT_JSON" '.builtInExtensions += [$ext]' product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
@@ -135,8 +142,6 @@ cat product.json
 # include common functions
 . ../utils.sh
 
-# Build icons
-. ../icons/build_icons.sh
 
 # {{{ apply patches
 
