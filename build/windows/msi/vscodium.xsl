@@ -14,15 +14,29 @@
   <xsl:key name="vId1ToReplace" match="wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]]" use="@Id"/>
   <xsl:template match="node()[key('vId1ToReplace', @Id)]">
     <xsl:copy>
-      <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
-      <xsl:copy-of select="@*[name()!='Id']"/>
+      <xsl:choose>
+        <xsl:when test="not(preceding::wi:Component[wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]])">
+          <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
+          <xsl:copy-of select="@*[name()!='Id']"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="@*"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates />
     </xsl:copy>
   </xsl:template>
   <xsl:template match="wi:Component/wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')]">
      <xsl:copy>
-        <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
-        <xsl:copy-of select="@*[name()!='Id']"/>
+        <xsl:choose>
+          <xsl:when test="not(preceding::wi:File[contains(@Source,'@@PRODUCT_NAME@@.exe')])">
+            <xsl:attribute name="Id">VSCODIUM.EXE</xsl:attribute>
+            <xsl:copy-of select="@*[name()!='Id']"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="@*"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates />
      </xsl:copy>
   </xsl:template>
@@ -366,15 +380,29 @@
   <xsl:key name="vId24ToReplace" match="wi:Component[wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]]" use="@Id"/>
   <xsl:template match="node()[key('vId24ToReplace', @Id)]">
     <xsl:copy>
-      <xsl:attribute name="Id">SHELL.ICO</xsl:attribute>
-      <xsl:copy-of select="@*[name()!='Id']"/>
+      <xsl:choose>
+        <xsl:when test="not(preceding::wi:Component[wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]])">
+          <xsl:attribute name="Id">SHELL.ICO</xsl:attribute>
+          <xsl:copy-of select="@*[name()!='Id']"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy-of select="@*"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates />
     </xsl:copy>
   </xsl:template>
   <xsl:template match="wi:Component/wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')]">
      <xsl:copy>
-        <xsl:attribute name="Id">SHELL.ICO</xsl:attribute>
-        <xsl:copy-of select="@*[name()!='Id']"/>
+        <xsl:choose>
+          <xsl:when test="not(preceding::wi:File[contains(@Source,'resources\app\resources\win32\shell.ico')])">
+            <xsl:attribute name="Id">SHELL.ICO</xsl:attribute>
+            <xsl:copy-of select="@*[name()!='Id']"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="@*"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates />
      </xsl:copy>
   </xsl:template>
