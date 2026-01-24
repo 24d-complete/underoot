@@ -135,6 +135,9 @@ cat product.json
 # include common functions
 . ../utils.sh
 
+# Build icons
+. ../icons/build_icons.sh
+
 # {{{ apply patches
 
 echo "APP_NAME=\"${APP_NAME}\""

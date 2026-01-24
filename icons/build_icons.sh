@@ -26,7 +26,7 @@ check_programs() { # {{{
   for arg in "$@"; do
     if ! command -v "${arg}" &> /dev/null; then
       echo "${arg} could not be found"
-      exit 0
+      exit 1
     fi
   done
 } # }}}
