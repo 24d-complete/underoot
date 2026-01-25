@@ -61,7 +61,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          brew install librsvg imagemagick
+          brew install librsvg imagemagick || true
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Setup Node.js environment
