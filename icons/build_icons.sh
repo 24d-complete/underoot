@@ -77,14 +77,30 @@ png_to_ico() {
 }
 
 load_linux_png() {
+  echo "Generating Linux PNG: $1"
   svg_to_png "icons/${QUALITY}/underoot_cnl.svg" "$1" 1024
+  if [[ ! -f "$1" ]]; then
+    echo "Error: Failed to generate Linux PNG: $1" >&2
+    exit 1
+  fi
 }
 
 load_windows_ico() {
+  echo "Generating Windows ICO: $1"
   local png_tmp="code_tmp.png"
   svg_to_png "icons/${QUALITY}/underoot_cnl.svg" "${png_tmp}" 1024
+  if [[ ! -f "${png_tmp}" ]]; then
+    echo "Error: Intermediate PNG for ICO not found" >&2
+    exit 1
+  fi
+  
   png_to_ico "${png_tmp}" "$1"
   rm "${png_tmp}"
+  
+  if [[ ! -f "$1" ]]; then
+    echo "Error: Failed to generate Windows ICO: $1" >&2
+    exit 1
+  fi
 }
 
 build_darwin_main() { # {{{
