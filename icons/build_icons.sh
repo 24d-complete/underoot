@@ -31,25 +31,59 @@ check_programs() { # {{{
   done
 } # }}}
 
-COMMON_DEPS="composite convert icotool rsvg-convert sed"
+# Strict check only for essential util
+check_programs "sed"
 
-if [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  check_programs ${COMMON_DEPS} "icns2png" "png2icns"
-else
-  # On Windows (msys), skip mac-specific tools
-  check_programs ${COMMON_DEPS}
-fi
+# Warn for others but don't exit - fallback logic handles them
+for tool in composite convert icotool rsvg-convert magick; do
+  if ! command -v "$tool" &> /dev/null; then
+    echo "Warning: $tool not found, will try alternatives if needed."
+  fi
+done
 
 . "./${VSCODE_PREFIX}utils.sh"
 
+# Helper: Convert SVG to PNG using available tools
+svg_to_png() {
+  local src="$1"
+  local dest="$2"
+  local size="$3" # e.g. 1024
+
+  if command -v rsvg-convert &> /dev/null; then
+    rsvg-convert -w "$size" -h "$size" "$src" -o "$dest"
+  elif command -v magick &> /dev/null; then
+    magick convert -background none -resize "${size}x${size}" "$src" "$dest"
+  elif command -v convert &> /dev/null; then
+    convert -background none -resize "${size}x${size}" "$src" "$dest"
+  else
+    echo "Error: No SVG converter found (checked rsvg-convert, magick, convert)" >&2
+    exit 1
+  fi
+}
+
+# Helper: Convert PNG to ICO
+png_to_ico() {
+  local src="$1"
+  local dest="$2"
+  
+  if command -v magick &> /dev/null; then
+     magick convert "$src" -define icon:auto-resize=256,128,96,64,48,32,24,16 "$dest"
+  elif command -v convert &> /dev/null; then
+     convert "$src" -define icon:auto-resize=256,128,96,64,48,32,24,16 "$dest"
+  else
+     echo "Error: No tool found to create ICO" >&2
+     exit 1
+  fi
+}
+
 load_linux_png() {
-  rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/underoot_cnl.svg" -o "$1"
+  svg_to_png "icons/${QUALITY}/underoot_cnl.svg" "$1" 1024
 }
 
 load_windows_ico() {
   local png_tmp="code_tmp.png"
-  rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/underoot_cnl.svg" -o "${png_tmp}"
-  convert "${png_tmp}" -define icon:auto-resize=256,128,96,64,48,32,24,16 "$1"
+  svg_to_png "icons/${QUALITY}/underoot_cnl.svg" "${png_tmp}" 1024
+  png_to_ico "${png_tmp}" "$1"
   rm "${png_tmp}"
 }
 
