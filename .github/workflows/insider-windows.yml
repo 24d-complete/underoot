@@ -28,7 +28,7 @@ env:
   APP_NAME: VSCodium
   ASSETS_REPOSITORY: ${{ github.repository }}-insiders
   BINARY_NAME: codium-insiders
-  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'insider' }}
+  GITHUB_BRANCH: ${{ github.ref_name }}
   GH_REPO_PATH: ${{ github.repository }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
@@ -95,6 +95,11 @@ jobs:
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: ./get_pr.sh
+
+      - name: Install Dependencies
+        run: |
+          choco install imagemagick librsvg
+        if: env.SHOULD_BUILD == 'yes'
 
       # - name: Setup GCC
       #   uses: egor-tensin/setup-gcc@v1

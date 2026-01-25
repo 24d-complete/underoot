@@ -59,6 +59,11 @@ jobs:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
         run: . get_pr.sh
 
+      - name: Install Dependencies
+        run: |
+          brew install librsvg imagemagick
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:

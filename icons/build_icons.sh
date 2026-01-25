@@ -34,10 +34,10 @@ check_programs() { # {{{
 COMMON_DEPS="composite convert icotool rsvg-convert sed"
 
 if [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  check_programs "${COMMON_DEPS}" "icns2png" "png2icns"
+  check_programs ${COMMON_DEPS} "icns2png" "png2icns"
 else
   # On Windows (msys), skip mac-specific tools
-  check_programs "${COMMON_DEPS}"
+  check_programs ${COMMON_DEPS}
 fi
 
 . "./${VSCODE_PREFIX}utils.sh"
