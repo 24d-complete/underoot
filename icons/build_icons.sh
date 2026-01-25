@@ -35,17 +35,16 @@ check_programs "icns2png" "composite" "convert" "png2icns" "icotool" "rsvg-conve
 
 . "./${VSCODE_PREFIX}utils.sh"
 
-if ! declare -F load_linux_png &>/dev/null; then
-  load_linux_png() {
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/linux/circle1/${COLOR}/paulo22s.png" -O "$1"
-  }
-fi
+load_linux_png() {
+  rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/underoot_cnl.svg" -o "$1"
+}
 
-if ! declare -F load_windows_ico &>/dev/null; then
-  load_windows_ico() {
-    wget "https://raw.githubusercontent.com/VSCodium/icons/main/icons/win32/nobg/${COLOR}/paulo22s.ico" -O "$1"
-  }
-fi
+load_windows_ico() {
+  local png_tmp="code_tmp.png"
+  rsvg-convert -w 1024 -h 1024 "icons/${QUALITY}/underoot_cnl.svg" -o "${png_tmp}"
+  convert "${png_tmp}" -define icon:auto-resize=256,128,96,64,48,32,24,16 "$1"
+  rm "${png_tmp}"
+}
 
 build_darwin_main() { # {{{
   if [[ ! -f "${SRC_PREFIX}src/${QUALITY}/resources/darwin/code.icns" ]]; then

@@ -4,7 +4,7 @@
 set -e
 
 # Build icons
-. ../icons/build_icons.sh
+. icons/build_icons.sh
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   cp -rp src/insider/* vscode/
