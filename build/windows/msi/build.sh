@@ -19,9 +19,18 @@ else
   PRODUCT_NAME="${APP_NAME:-Underoot}"
   PRODUCT_CODE="${APP_NAME:-Underoot}"
   PRODUCT_UPGRADE_CODE="965370CD-253C-4720-82FC-2E6B02A53808"
-  ICON_DIR="..\\..\\..\\src\\stable\\resources\\win32"
+  ICON_DIR="$( cd "${CALLER_DIR}/../../../src/stable/resources/win32" && pwd -W )"
   SETUP_RESOURCES_DIR=".\\resources\\stable"
 fi
+
+if [[ ! -f "${ICON_DIR}/code.ico" ]]; then
+  echo "Error: Icon file not found at ${ICON_DIR}/code.ico"
+  echo "Listing directory content:"
+  ls -l "$( dirname "${ICON_DIR}/code.ico" )"
+  exit 1
+fi
+# Escape backslashes for WiX properties
+ICON_DIR="${ICON_DIR//\//\\}"
 
 PRODUCT_ID=$( powershell.exe -command "[guid]::NewGuid().ToString().ToUpper()" )
 PRODUCT_ID="${PRODUCT_ID%%[[:cntrl:]]}"
