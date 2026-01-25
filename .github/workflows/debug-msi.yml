@@ -24,8 +24,9 @@ jobs:
 
       - name: Setup Mock Environment
         run: |
-          mkdir -p vscode
+          mkdir -p vscode/resources/win32
           mkdir -p "VSCode-win32-x64"
+          touch vscode/resources/win32/code.ico
           echo "Mock build"
 
       - name: Debug Directory and Permissions
