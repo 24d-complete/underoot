@@ -19,7 +19,7 @@ else
   PRODUCT_NAME="${APP_NAME:-Underoot}"
   PRODUCT_CODE="${APP_NAME:-Underoot}"
   PRODUCT_UPGRADE_CODE="965370CD-253C-4720-82FC-2E6B02A53808"
-  ICON_DIR="$( cd "${CALLER_DIR}/../../../src/stable/resources/win32" && pwd -W )"
+  ICON_DIR="$( cd "../../../src/stable/resources/win32" && pwd -W )"
   SETUP_RESOURCES_DIR=".\\resources\\stable"
 fi
 
