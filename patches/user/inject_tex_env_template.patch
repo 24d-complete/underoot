@@ -1,5 +1,5 @@
 diff --git a/src/vs/workbench/api/node/extensionHostProcess.ts b/src/vs/workbench/api/node/extensionHostProcess.ts
-index abcdef1..1234567 100644
+index aba00b3..601c4c8 100644
 --- a/src/vs/workbench/api/node/extensionHostProcess.ts
 +++ b/src/vs/workbench/api/node/extensionHostProcess.ts
 @@ -29,6 +29,9 @@ import '../common/extHost.common.services.js';
@@ -17,7 +17,7 @@ index abcdef1..1234567 100644
  }
  
 +/**
-+ * Underoot: Inject TeX Environment Variables
++ * !!APP_NAME!!: Inject TeX Environment Variables
 + * Takes the locally managed distribution and injects it into the PATH
 + * just for this extension host process.
 + */
@@ -28,18 +28,18 @@ index abcdef1..1234567 100644
 +		let texBinPath = '';
 +
 +		if (platform === 'win32') {
-+			texBinPath = path.join(homeDir, '.underoot', 'tools', 'texlive', 'bin', 'windows');
++			texBinPath = path.join(homeDir, '.!!GLOBAL_DIRNAME!!', 'tools', 'texlive', 'bin', 'windows');
 +		} else {
 +			// Fallback/Linux logic (to be refined)
-+			texBinPath = path.join(homeDir, '.underoot', 'tools', 'texlive', 'bin', 'x86_64-linux');
++			texBinPath = path.join(homeDir, '.!!GLOBAL_DIRNAME!!', 'tools', 'texlive', 'bin', 'x86_64-linux');
 +		}
 +
 +		if (fs.existsSync(texBinPath)) {
 +			process.env['PATH'] = texBinPath + path.delimiter + process.env['PATH'];
-+			console.log(`[Underoot] Injected TeX environment: ${texBinPath}`);
++			console.log(`[!!APP_NAME!!] Injected TeX environment: ${texBinPath}`);
 +		}
 +	} catch (e) {
-+		console.error('[Underoot] Failed to inject TeX environment', e);
++		console.error('[!!APP_NAME!!] Failed to inject TeX environment', e);
 +	}
 +}
 +
@@ -51,7 +51,7 @@ index abcdef1..1234567 100644
  	performance.mark(`code/extHost/didWaitForInitData`);
  	const { initData } = renderer;
 +	
-+	// Underoot: Inject TeX Path before extensions load
++	// !!APP_NAME!!: Inject TeX Path before extensions load
 +	injectTexEnvironment();
 +	
  	// setup things
