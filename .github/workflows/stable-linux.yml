@@ -31,7 +31,7 @@ env:
   BINARY_NAME: underoot
   DISABLE_UPDATE: 'yes'
   GH_REPO_PATH: ${{ github.repository }}
-  GITHUB_BRANCH: main
+  GITHUB_BRANCH: ${{ github.ref_name }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: linux
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
