@@ -28,30 +28,18 @@ echo "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696 *latex-wo
 # This avoids build-process stripping and ensures we control the contents.
 # We also rename node_modules to node_modules_bypass to avoid them being stripped by the artifact compression step in the workflow.
 mkdir -p extensions/latex-workshop
-python3 -c "import zipfile; import sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')"
+# Use tar (bsdtar) which handles zip files and long paths better than python/powershell on windows git bash
+tar -xf latex-workshop.vsix -C extensions/temp_lw
 # The VSIX content is inside an 'extension' folder
 if [[ -d "extensions/temp_lw/extension" ]]; then
   cp -r extensions/temp_lw/extension/* extensions/latex-workshop/
   rm -rf extensions/temp_lw
 fi
 
-# Dependency Integrity Fix:
-# The bundled node_modules in VSIX can be incomplete or flattened in a way that fails in this environment.
-# We force a fresh install of dependencies.
-if [[ -d "extensions/latex-workshop" ]]; then
-  echo "Installing dependencies for latex-workshop..."
-  cd extensions/latex-workshop
-  
-  # Remove existing node_modules to ensure clean install
-  rm -rf node_modules
-  
-  # Install production dependencies only
-  # We use --ignore-scripts to avoid potential build issues with native modules if not needed/compatible
-  # We use --no-package-lock to rely on package.json versions
-  npm install --omit=dev --ignore-scripts --no-package-lock
-  
-  cd ../..
-fi
+# We DO NOT run npm install here anymore.
+# The VSIX comes with bundled node_modules that are guaranteed to work.
+# The previous attempt to npm install caused bloat and version mismatches (minimatch/glob).
+# We solely rely on bypassing the CI strippers by renaming node_modules.
 
 # Rename node_modules to bypass 'find ... -not -path "*/node_modules/*"' in workflow
 if [[ -d "extensions/latex-workshop/node_modules" ]]; then
