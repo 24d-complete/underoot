@@ -38,7 +38,24 @@ if [[ -d "extensions/temp_lw/extension" ]]; then
   rm -rf extensions/temp_lw
 fi
 
-# No npm install needed.
+# Ensure dependencies are valid for the build system (fixes npm error code ELSPROBLEMS)
+# The VSIX bundled node_modules might be incomplete or fail strict 'npm list' checks.
+if [[ -d "extensions/latex-workshop" ]]; then
+  echo "Installing dependencies for latex-workshop..."
+  cd extensions/latex-workshop || exit 1
+  
+  # Remove possibly problematic bundled node_modules
+  rm -rf node_modules
+  
+  # Clean install of production dependencies
+  # --legacy-peer-deps helps with potential peer dep conflicts in older extensions
+  # --no-package-lock ensures we use the version ranges from package.json if lockfile is missing/incompatible
+  npm install --omit=dev --no-package-lock --legacy-peer-deps
+  
+  cd ../..
+fi
+
+# No renaming (bypass) needed.
 # No renaming (bypass) needed.
 # The build system will see 'vscode/extensions/latex-workshop/package.json' and 'node_modules'
 # and bundle them into the final artifact automatically.
