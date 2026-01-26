@@ -11,11 +11,6 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-# Restore LaTeX Workshop node_modules (bypassed in prepare_vscode.sh)
-if [[ -d "extensions/latex-workshop/node_modules_bypass" ]]; then
-  mv "extensions/latex-workshop/node_modules_bypass" "extensions/latex-workshop/node_modules"
-fi
-
 for i in {1..5}; do # try 5 times
   npm ci && break
   if [[ $i == 5 ]]; then
@@ -38,10 +33,21 @@ node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc w
 
 npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
 
-# Force copy LaTeX Workshop to the final build (ensure node_modules are present)
+# Force copy LaTeX Workshop to the final build
+# Also restore the package.json and node_modules that were renamed to bypass CI/npm checks
 APP_PATH="../VSCode-win32-${VSCODE_ARCH}/resources/app/extensions/latex-workshop"
 if [[ -d "extensions/latex-workshop" ]]; then
   echo "Manually injecting latex-workshop into ${APP_PATH}"
+  
+  # Restore files in source before copying (or copy then rename)
+  # It's cleaner to restore in source first, but we must be sure npm/gulp won't run again on this source.
+  if [[ -f "extensions/latex-workshop/package.json.bypass" ]]; then
+    mv "extensions/latex-workshop/package.json.bypass" "extensions/latex-workshop/package.json"
+  fi
+  if [[ -d "extensions/latex-workshop/node_modules_bypass" ]]; then
+    mv "extensions/latex-workshop/node_modules_bypass" "extensions/latex-workshop/node_modules"
+  fi
+
   mkdir -p "$APP_PATH"
   cp -r extensions/latex-workshop/* "$APP_PATH/"
 fi

@@ -40,6 +40,11 @@ if [[ -d "extensions/latex-workshop/node_modules" ]]; then
   mv extensions/latex-workshop/node_modules extensions/latex-workshop/node_modules_bypass
 fi
 
+# Rename package.json to bypass npm workspace/validation checks during npm ci
+if [[ -f "extensions/latex-workshop/package.json" ]]; then
+  mv extensions/latex-workshop/package.json extensions/latex-workshop/package.json.bypass
+fi
+
 { set +x; } 2>/dev/null
 
 # {{{ product.json
