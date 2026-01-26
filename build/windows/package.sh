@@ -11,6 +11,11 @@ tar -xzf ./vscode.tar.gz
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+# Restore LaTeX Workshop node_modules (bypassed in prepare_vscode.sh)
+if [[ -d "extensions/latex-workshop/node_modules_bypass" ]]; then
+  mv "extensions/latex-workshop/node_modules_bypass" "extensions/latex-workshop/node_modules"
+fi
+
 for i in {1..5}; do # try 5 times
   npm ci && break
   if [[ $i == 5 ]]; then
@@ -32,6 +37,15 @@ npm run copy-policy-dto --prefix build
 node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
 
 npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+
+# Force copy LaTeX Workshop to the final build (ensure node_modules are present)
+APP_PATH="../VSCode-win32-${VSCODE_ARCH}/resources/app/extensions/latex-workshop"
+if [[ -d "extensions/latex-workshop" ]]; then
+  echo "Manually injecting latex-workshop into ${APP_PATH}"
+  mkdir -p "$APP_PATH"
+  cp -r extensions/latex-workshop/* "$APP_PATH/"
+fi
+
 
 . ../build_cli.sh
 

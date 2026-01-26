@@ -20,6 +20,26 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 # Version: 10.12.2
 curl -L -o latex-workshop.vsix "https://open-vsx.org/api/James-Yu/latex-workshop/10.12.2/file/James-Yu.latex-workshop-10.12.2.vsix"
 
+# Verify Checksum
+echo "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696 *latex-workshop.vsix" | sha256sum -c -
+
+# Unpack Extension (Manual Install)
+# We unpack into extensions/latex-workshop instead of injecting into product.json
+# This avoids build-process stripping and ensures we control the contents.
+# We also rename node_modules to node_modules_bypass to avoid them being stripped by the artifact compression step in the workflow.
+mkdir -p extensions/latex-workshop
+python3 -c "import zipfile; import sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')"
+# The VSIX content is inside an 'extension' folder
+if [[ -d "extensions/temp_lw/extension" ]]; then
+  cp -r extensions/temp_lw/extension/* extensions/latex-workshop/
+  rm -rf extensions/temp_lw
+fi
+
+# Rename node_modules to bypass 'find ... -not -path "*/node_modules/*"' in workflow
+if [[ -d "extensions/latex-workshop/node_modules" ]]; then
+  mv extensions/latex-workshop/node_modules extensions/latex-workshop/node_modules_bypass
+fi
+
 { set +x; } 2>/dev/null
 
 # {{{ product.json
@@ -127,13 +147,6 @@ fi
 setpath_json "product" "tunnelApplicationConfig" '{}'
 
 jsonTmp=$( jq -s '.[0] * .[1]' product.json ../product.json )
-echo "${jsonTmp}" > product.json && unset jsonTmp
-
-# Inject LaTeX Workshop (Built-in)
-# Version: 10.12.2
-LATEX_EXT_JSON='{"name": "James-Yu.latex-workshop", "version": "10.12.2", "sha256": "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696", "vsix": "latex-workshop.vsix", "metadata": {"id": "james-yu.latex-workshop", "publisherId": {"publisherId": "James-Yu", "publisherName": "James-Yu", "displayName": "James-Yu", "flags": "verified"}, "publisherDisplayName": "James-Yu"}}'
-
-jsonTmp=$( jq --argjson ext "$LATEX_EXT_JSON" '.builtInExtensions += [$ext]' product.json )
 echo "${jsonTmp}" > product.json && unset jsonTmp
 
 cat product.json
