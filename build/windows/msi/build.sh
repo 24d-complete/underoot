@@ -13,14 +13,30 @@ if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
   PRODUCT_NAME="${APP_NAME} - Insiders"
   PRODUCT_CODE="${APP_NAME}Insiders"
   PRODUCT_UPGRADE_CODE="1C9B7195-5A9A-43B3-B4BD-583E20498467"
-  ICON_DIR="$( cd "../../../vscode/resources/win32" && pwd -W )"
   SETUP_RESOURCES_DIR=".\\resources\\insider"
+
+  if [[ -d "../../../vscode/resources/win32" ]]; then
+    ICON_DIR="$( cd "../../../vscode/resources/win32" && pwd -W )"
+  elif [[ -d "../../../src/insider/resources/win32" ]]; then
+    ICON_DIR="$( cd "../../../src/insider/resources/win32" && pwd -W )"
+  else
+    echo "Error: Icon directory not found. Checked ../../../vscode/resources/win32 and ../../../src/insider/resources/win32" >&2
+    exit 1
+  fi
 else
   PRODUCT_NAME="${APP_NAME:-Underoot}"
   PRODUCT_CODE="${APP_NAME:-Underoot}"
   PRODUCT_UPGRADE_CODE="965370CD-253C-4720-82FC-2E6B02A53808"
-  ICON_DIR="$( cd "../../../vscode/resources/win32" && pwd -W )"
   SETUP_RESOURCES_DIR=".\\resources\\stable"
+
+  if [[ -d "../../../vscode/resources/win32" ]]; then
+    ICON_DIR="$( cd "../../../vscode/resources/win32" && pwd -W )"
+  elif [[ -d "../../../src/stable/resources/win32" ]]; then
+    ICON_DIR="$( cd "../../../src/stable/resources/win32" && pwd -W )"
+  else
+    echo "Error: Icon directory not found. Checked ../../../vscode/resources/win32 and ../../../src/stable/resources/win32" >&2
+    exit 1
+  fi
 fi
 
 if [[ ! -f "${ICON_DIR}/code.ico" ]]; then
