@@ -23,38 +23,28 @@ curl -L -o latex-workshop.vsix "https://open-vsx.org/api/James-Yu/latex-workshop
 # Verify Checksum
 echo "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696 *latex-workshop.vsix" | sha256sum -c -
 
-# Unpack Extension (Manual Install)
-# We unpack into extensions/latex-workshop instead of injecting into product.json
-# This avoids build-process stripping and ensures we control the contents.
-# We also rename node_modules to node_modules_bypass to avoid them being stripped by the artifact compression step in the workflow.
-mkdir -p extensions/latex-workshop
+# Unpack Extension (Source Injection)
+# We unpack into vscode/extensions/latex-workshop
+# This allows the build system (gulpfile.extensions.ts) to pick it up as a local extension
+# and package it correctly, respecting its node_modules.
+mkdir -p vscode/extensions/latex-workshop
 
 # Use Python for robust extraction (Cross-platform, avoids tar/unzip issues with VSIX/Zip)
 # CI runners have Python installed. We try python3 then python.
-if ! python3 -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')" 2>/dev/null; then
-  python -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')"
+if ! python3 -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('vscode/extensions/temp_lw')" 2>/dev/null; then
+  python -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('vscode/extensions/temp_lw')"
 fi
 
 # The VSIX content is inside an 'extension' folder
-if [[ -d "extensions/temp_lw/extension" ]]; then
-  cp -r extensions/temp_lw/extension/* extensions/latex-workshop/
-  rm -rf extensions/temp_lw
+if [[ -d "vscode/extensions/temp_lw/extension" ]]; then
+  cp -r vscode/extensions/temp_lw/extension/* vscode/extensions/latex-workshop/
+  rm -rf vscode/extensions/temp_lw
 fi
 
-# We DO NOT run npm install here anymore.
-# The VSIX comes with bundled node_modules that are guaranteed to work.
-# The previous attempt to npm install caused bloat and version mismatches (minimatch/glob).
-# We solely rely on bypassing the CI strippers by renaming node_modules.
-
-# Rename node_modules to bypass 'find ... -not -path "*/node_modules/*"' in workflow
-if [[ -d "extensions/latex-workshop/node_modules" ]]; then
-  mv extensions/latex-workshop/node_modules extensions/latex-workshop/node_modules_bypass
-fi
-
-# Rename package.json to bypass npm workspace/validation checks during npm ci
-if [[ -f "extensions/latex-workshop/package.json" ]]; then
-  mv extensions/latex-workshop/package.json extensions/latex-workshop/package.json.bypass
-fi
+# No npm install needed.
+# No renaming (bypass) needed.
+# The build system will see 'vscode/extensions/latex-workshop/package.json' and 'node_modules'
+# and bundle them into the final artifact automatically.
 
 { set +x; } 2>/dev/null
 
