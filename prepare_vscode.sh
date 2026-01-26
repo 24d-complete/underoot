@@ -35,6 +35,24 @@ if [[ -d "extensions/temp_lw/extension" ]]; then
   rm -rf extensions/temp_lw
 fi
 
+# Dependency Integrity Fix:
+# The bundled node_modules in VSIX can be incomplete or flattened in a way that fails in this environment.
+# We force a fresh install of dependencies.
+if [[ -d "extensions/latex-workshop" ]]; then
+  echo "Installing dependencies for latex-workshop..."
+  cd extensions/latex-workshop
+  
+  # Remove existing node_modules to ensure clean install
+  rm -rf node_modules
+  
+  # Install production dependencies only
+  # We use --ignore-scripts to avoid potential build issues with native modules if not needed/compatible
+  # We use --no-package-lock to rely on package.json versions
+  npm install --omit=dev --ignore-scripts --no-package-lock
+  
+  cd ../..
+fi
+
 # Rename node_modules to bypass 'find ... -not -path "*/node_modules/*"' in workflow
 if [[ -d "extensions/latex-workshop/node_modules" ]]; then
   mv extensions/latex-workshop/node_modules extensions/latex-workshop/node_modules_bypass
