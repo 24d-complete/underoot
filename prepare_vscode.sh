@@ -28,8 +28,13 @@ echo "93b8bab2747cbd01ba4189437b0ea102f210e22c4765812b8706b2a23da9a696 *latex-wo
 # This avoids build-process stripping and ensures we control the contents.
 # We also rename node_modules to node_modules_bypass to avoid them being stripped by the artifact compression step in the workflow.
 mkdir -p extensions/latex-workshop
-# Use tar (bsdtar) which handles zip files and long paths better than python/powershell on windows git bash
-tar -xf latex-workshop.vsix -C extensions/temp_lw
+
+# Use Python for robust extraction (Cross-platform, avoids tar/unzip issues with VSIX/Zip)
+# CI runners have Python installed. We try python3 then python.
+if ! python3 -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')" 2>/dev/null; then
+  python -c "import zipfile, sys; zipfile.ZipFile('latex-workshop.vsix').extractall('extensions/temp_lw')"
+fi
+
 # The VSIX content is inside an 'extension' folder
 if [[ -d "extensions/temp_lw/extension" ]]; then
   cp -r extensions/temp_lw/extension/* extensions/latex-workshop/
