@@ -15,7 +15,7 @@ on:
   repository_dispatch:
     types: [stable]
   push:
-    branches: [ master, main, 'feature/**' ]
+    branches: [ master, main, 'feature/**', macos, macos-branch ]
     paths-ignore:
     - '**/*.md'
     - 'upstream/*.json'

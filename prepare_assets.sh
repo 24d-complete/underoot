@@ -43,6 +43,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     DEBUG="electron-osx-sign*" node vscode/build/darwin/sign.ts "$( pwd )"
     # codesign --display --entitlements :- ""
+    codesign -dv --verbose=4 ./*.app
 
     echo "+ notarize"
 
@@ -57,7 +58,7 @@ if [[ "${OS_NAME}" == "osx" ]]; then
 
     echo "+ attach staple"
     xcrun stapler staple ./*.app
-    # spctl --assess -vv --type install ./*.app
+    spctl --assess -vv --type install ./*.app
 
     rm "${ZIP_FILE}"
 
