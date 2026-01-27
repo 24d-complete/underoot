@@ -52,11 +52,11 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # --no-package-lock ensures we use the version ranges from package.json if lockfile is missing/incompatible
   npm install --omit=dev --no-package-lock --legacy-peer-deps
 
-  # CRITICAL: Remove .vscodeignore
-  # The extension comes with a .vscodeignore that excludes 'node_modules/esm', 'node_modules/mj-context-menu', etc.
-  # VS Code's build system respects this file, stripping out the very dependencies we just installed.
-  # Deleting it forces vsce to include EVERYTHING in the folder.
-  rm -f .vscodeignore
+  # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules
+  # 1. The bundled .vscodeignore excludes 'esm', 'mj-context-menu' (bad).
+  # 2. The repo's root .gitignore excludes 'node_modules' (bad for vsce).
+  # We overwrite .vscodeignore to explicitly UN-IGNORE (!) node_modules, forcing vsce to package them.
+  echo "!node_modules/**" > .vscodeignore
   
   # --- VALIDATION LOGGING ---
   echo ">>> Validating source injection structure..."
