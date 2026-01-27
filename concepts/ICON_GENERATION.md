@@ -37,9 +37,17 @@ It uses the following tools:
 
 ## Integration Flow
 
+### 3. Build Process Termination (Execution Fix)
+*   **Problem**: `icons/build_icons.sh` uses `exit 0` when skipping generation (because icons already exist).
+*   **Failure Cause**: `prepare_vscode.sh` was *sourcing* the script (`. icons/build_icons.sh`). The `exit 0` command terminated the entire parent process, causing the rest of the build to be skipped.
+*   **Fix**: Updated `prepare_vscode.sh` to execute the script as a subprocess (`./icons/build_icons.sh`). This ensures the exit code only terminates the child process.
+
+## Integration Flow
+
 The `prepare_vscode.sh` script orchestrates the build:
 1.  **Detects OS**: Determines which host OS it is running on.
-2.  **Calls Builder**: Executes `./icons/build_icons.sh`.
+2.  **Calls Builder**: Executes `./icons/build_icons.sh` (as a subprocess).
+    *   **Skip Check**: If `src/stable/resources/` already contains icons, the builder exits immediately.
 3.  **Copies Assets**: Moves generated icons from `src/stable/resources/` to `vscode/resources/`.
 
 ## Architecture Diagram
