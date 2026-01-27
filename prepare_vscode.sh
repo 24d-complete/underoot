@@ -58,6 +58,26 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # Deleting it forces vsce to include EVERYTHING in the folder.
   rm -f .vscodeignore
   
+  # --- VALIDATION LOGGING ---
+  echo ">>> Validating source injection structure..."
+  if [[ -d "node_modules/cross-spawn" ]]; then
+    echo "SUCCESS: 'cross-spawn' found in source injection folder."
+  else
+    echo "ERROR: 'cross-spawn' MISSING after npm install!"
+    exit 1
+  fi
+  
+  if [[ -d "node_modules/esm" ]]; then
+    echo "SUCCESS: 'esm' found in source injection folder."
+  else
+    echo "WARNING: 'esm' missing. If it was optional, this might be ok, but unexpected."
+  fi
+
+  echo "Top-level node_modules content:"
+  ls -F node_modules | head -n 10
+  echo ">>> Validation complete."
+  # -------------------------
+  
   cd ../..
 fi
 
