@@ -81,6 +81,11 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # Local extensions' private node_modules are often skipped or stripped. 
   # By injecting them into the shared pool, we guarantee they are harvested.
   echo "Syncing dependencies to shared extensions folder..."
+  # Ensure shared package.json exists
+  if [ ! -f "../package.json" ]; then
+    echo '{"dependencies":{}}' > "../package.json"
+  fi
+
   node -e "
     const fs = require('fs');
     const lwPkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
