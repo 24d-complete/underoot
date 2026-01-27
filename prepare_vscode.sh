@@ -50,8 +50,23 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # Clean install of production dependencies for the extension itself (for local runs)
   npm install --omit=dev --no-package-lock --legacy-peer-deps
 
-  # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules
+  # CRITICAL: Copy PDF.js assets to viewer folder
+  # The webview expects 'build/pdf.mjs' and 'cmaps/' to be relative to 'viewer.html'.
+  # These are not in the repo/VSIX structure by default (likely a build artifact).
+  # We manually populate them from the installed node_modules.
+  echo "Populating PDF viewer assets..."
+  mkdir -p viewer/build
+  cp -r node_modules/pdfjs-dist/build/* viewer/build/
+  mkdir -p viewer/cmaps
+  if [ -d "node_modules/pdfjs-dist/cmaps" ]; then
+    cp -r node_modules/pdfjs-dist/cmaps/* viewer/cmaps/
+  fi
+
+  # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules AND viewer assets
+  # We un-ignore node_modules/** and viewer/build/** just in case
   echo "!node_modules/**" > .vscodeignore
+  echo "!viewer/build/**" >> .vscodeignore
+  echo "!viewer/cmaps/**" >> .vscodeignore
 
   # DEFINITIVE FIX: Inject dependencies into the shared 'extensions' folder.
   # VS Code's build system (Gulp) harvests production dependencies from 'vscode/extensions/package.json'.
@@ -85,6 +100,13 @@ if [[ -d "extensions/latex-workshop" ]]; then
     echo "SUCCESS: 'cross-spawn' found in SHARED extensions folder."
   else
     echo "ERROR: 'cross-spawn' MISSING in shared folder after npm install!"
+    exit 1
+  fi
+
+  if [[ -f "extensions/latex-workshop/viewer/build/pdf.mjs" ]]; then
+    echo "SUCCESS: 'pdf.mjs' found in viewer/build folder."
+  else
+    echo "ERROR: 'pdf.mjs' MISSING in viewer/build folder!"
     exit 1
   fi
   
