@@ -75,23 +75,23 @@ if [[ -d "extensions/latex-workshop" ]]; then
   
   # --- VALIDATION LOGGING ---
   echo ">>> Validating source injection structure..."
-  if [[ -d "node_modules/cross-spawn" ]]; then
-    echo "SUCCESS: 'cross-spawn' found in local folder."
+  # Current location: vscode/
+  
+  if [[ -d "extensions/latex-workshop/node_modules/cross-spawn" ]]; then
+    echo "SUCCESS: 'cross-spawn' found in local extension folder."
   fi
   
-  if [[ -d "../node_modules/cross-spawn" ]]; then
+  if [[ -d "extensions/node_modules/cross-spawn" ]]; then
     echo "SUCCESS: 'cross-spawn' found in SHARED extensions folder."
   else
-    echo "ERROR: 'cross-spawn' MISSING after shared install!"
+    echo "ERROR: 'cross-spawn' MISSING in shared folder after npm install!"
     exit 1
   fi
   
   echo "Top-level SHARED node_modules content:"
-  ls -F ../node_modules | head -n 10
+  ls -F extensions/node_modules | head -n 10
   echo ">>> Validation complete."
   # -------------------------
-  
-  cd ../..
 fi
 
 # No renaming (bypass) needed.
