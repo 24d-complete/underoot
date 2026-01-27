@@ -51,6 +51,12 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # --legacy-peer-deps helps with potential peer dep conflicts in older extensions
   # --no-package-lock ensures we use the version ranges from package.json if lockfile is missing/incompatible
   npm install --omit=dev --no-package-lock --legacy-peer-deps
+
+  # CRITICAL: Remove .vscodeignore
+  # The extension comes with a .vscodeignore that excludes 'node_modules/esm', 'node_modules/mj-context-menu', etc.
+  # VS Code's build system respects this file, stripping out the very dependencies we just installed.
+  # Deleting it forces vsce to include EVERYTHING in the folder.
+  rm -f .vscodeignore
   
   cd ../..
 fi
