@@ -69,7 +69,7 @@ if [[ -d "extensions/latex-workshop" ]]; then
   "
 
   # Install in the shared folder so the harvester finds them physically
-  cd extensions
+  cd ..
   npm install --omit=dev --legacy-peer-deps
   cd ..
   
