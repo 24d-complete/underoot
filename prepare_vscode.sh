@@ -63,14 +63,38 @@ if [[ -d "extensions/latex-workshop" ]]; then
     cp -r node_modules/pdfjs-dist/cmaps/* viewer/cmaps/
   fi
 
+  # Copy standard_fonts
+  mkdir -p viewer/standard_fonts
+  if [ -d "node_modules/pdfjs-dist/standard_fonts" ]; then
+    cp -r node_modules/pdfjs-dist/standard_fonts/* viewer/standard_fonts/
+  fi
+
   # Update viewer.html to point to the new location (pdfjs/pdf.mjs instead of build/pdf.mjs)
-  # This uses sed to patch the HTML file in place.
   sed -i 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+
+  # CRITICAL: Patch the JS config to use the new paths
+  # The extension JS (out/viewer/latexworkshop.js) has hardcoded paths like './build/pdf.worker.mjs' and '../cmaps/'.
+  # We must rewrite them to point to our local 'viewer/pdfjs', 'viewer/cmaps' etc.
+  # Note: The JS runs in the context of viewer.html (in viewer/), so paths should be relative to viewer/.
+  
+  JS_FILE="out/viewer/latexworkshop.js"
+  if [ -f "$JS_FILE" ]; then
+    echo "Patching $JS_FILE paths..."
+    # Fix worker path
+    sed -i "s|workerSrc: './build/pdf.worker.mjs'|workerSrc: './pdfjs/pdf.worker.mjs'|" "$JS_FILE"
+    # Fix cmaps path (was ../cmaps/)
+    sed -i "s|cMapUrl: '../cmaps/'|cMapUrl: './cmaps/'|" "$JS_FILE"
+    # Fix standard fonts path (was ../standard_fonts/)
+    sed -i "s|standardFontDataUrl: '../standard_fonts/'|standardFontDataUrl: './standard_fonts/'|" "$JS_FILE"
+  else
+    echo "WARNING: $JS_FILE not found, could not patch worker path!"
+  fi
 
   # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules AND viewer assets
   echo "!node_modules/**" > .vscodeignore
   echo "!viewer/pdfjs/**" >> .vscodeignore
   echo "!viewer/cmaps/**" >> .vscodeignore
+  echo "!viewer/standard_fonts/**" >> .vscodeignore
 
   # DEFINITIVE FIX: Inject dependencies into the shared 'extensions' folder.
   # VS Code's build system (Gulp) harvests production dependencies from 'vscode/extensions/package.json'.
@@ -107,12 +131,16 @@ if [[ -d "extensions/latex-workshop" ]]; then
     exit 1
   fi
 
-  # Check for the NEW path
+  # Check for the NEW paths
   if [[ -f "extensions/latex-workshop/viewer/pdfjs/pdf.mjs" ]]; then
     echo "SUCCESS: 'pdf.mjs' found in viewer/pdfjs folder."
   else
     echo "ERROR: 'pdf.mjs' MISSING in viewer/pdfjs folder!"
     exit 1
+  fi
+
+  if [[ -f "extensions/latex-workshop/viewer/pdfjs/pdf.worker.mjs" ]]; then
+     echo "SUCCESS: 'pdf.worker.mjs' found."
   fi
   
   echo "Top-level SHARED node_modules content:"
