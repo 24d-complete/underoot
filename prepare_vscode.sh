@@ -65,7 +65,11 @@ if [[ -d "extensions/latex-workshop" ]]; then
 
   # Update viewer.html to point to the new location (pdfjs/pdf.mjs instead of build/pdf.mjs)
   # This uses sed to patch the HTML file in place.
-  sed -i 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  if [[ "${OS_NAME}" == "osx" ]]; then
+    sed -i '' 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  else
+    sed -i 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  fi
 
   # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules AND viewer assets
   echo "!node_modules/**" > .vscodeignore
