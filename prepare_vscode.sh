@@ -60,8 +60,8 @@ if [[ -d "extensions/latex-workshop" ]]; then
   echo "Syncing dependencies to shared extensions folder..."
   node -e "
     const fs = require('fs');
-    const lwPkg = JSON.parse(fs.readFileSync('extensions/latex-workshop/package.json', 'utf8'));
-    const extPkgPath = 'extensions/package.json';
+    const lwPkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    const extPkgPath = '../package.json';
     const extPkg = JSON.parse(fs.readFileSync(extPkgPath, 'utf8'));
     extPkg.dependencies = { ...extPkg.dependencies, ...lwPkg.dependencies };
     fs.writeFileSync(extPkgPath, JSON.stringify(extPkg, null, 2));
