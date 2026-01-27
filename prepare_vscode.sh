@@ -47,34 +47,47 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # Remove possibly problematic bundled node_modules
   rm -rf node_modules
   
-  # Clean install of production dependencies
-  # --legacy-peer-deps helps with potential peer dep conflicts in older extensions
-  # --no-package-lock ensures we use the version ranges from package.json if lockfile is missing/incompatible
+  # Clean install of production dependencies for the extension itself (for local runs)
   npm install --omit=dev --no-package-lock --legacy-peer-deps
 
   # CRITICAL: Override .vscodeignore to FORCE inclusion of node_modules
-  # 1. The bundled .vscodeignore excludes 'esm', 'mj-context-menu' (bad).
-  # 2. The repo's root .gitignore excludes 'node_modules' (bad for vsce).
-  # We overwrite .vscodeignore to explicitly UN-IGNORE (!) node_modules, forcing vsce to package them.
   echo "!node_modules/**" > .vscodeignore
+
+  # DEFINITIVE FIX: Inject dependencies into the shared 'extensions' folder.
+  # VS Code's build system (Gulp) harvests production dependencies from 'vscode/extensions/package.json'.
+  # Local extensions' private node_modules are often skipped or stripped. 
+  # By injecting them into the shared pool, we guarantee they are harvested.
+  echo "Syncing dependencies to shared extensions folder..."
+  node -e "
+    const fs = require('fs');
+    const lwPkg = JSON.parse(fs.readFileSync('extensions/latex-workshop/package.json', 'utf8'));
+    const extPkgPath = 'extensions/package.json';
+    const extPkg = JSON.parse(fs.readFileSync(extPkgPath, 'utf8'));
+    extPkg.dependencies = { ...extPkg.dependencies, ...lwPkg.dependencies };
+    fs.writeFileSync(extPkgPath, JSON.stringify(extPkg, null, 2));
+    console.log('Successfully merged ' + Object.keys(lwPkg.dependencies).length + ' dependencies for harvesting.');
+  "
+
+  # Install in the shared folder so the harvester finds them physically
+  cd extensions
+  npm install --omit=dev --legacy-peer-deps
+  cd ..
   
   # --- VALIDATION LOGGING ---
   echo ">>> Validating source injection structure..."
   if [[ -d "node_modules/cross-spawn" ]]; then
-    echo "SUCCESS: 'cross-spawn' found in source injection folder."
+    echo "SUCCESS: 'cross-spawn' found in local folder."
+  fi
+  
+  if [[ -d "../node_modules/cross-spawn" ]]; then
+    echo "SUCCESS: 'cross-spawn' found in SHARED extensions folder."
   else
-    echo "ERROR: 'cross-spawn' MISSING after npm install!"
+    echo "ERROR: 'cross-spawn' MISSING after shared install!"
     exit 1
   fi
   
-  if [[ -d "node_modules/esm" ]]; then
-    echo "SUCCESS: 'esm' found in source injection folder."
-  else
-    echo "WARNING: 'esm' missing. If it was optional, this might be ok, but unexpected."
-  fi
-
-  echo "Top-level node_modules content:"
-  ls -F node_modules | head -n 10
+  echo "Top-level SHARED node_modules content:"
+  ls -F ../node_modules | head -n 10
   echo ">>> Validation complete."
   # -------------------------
   
