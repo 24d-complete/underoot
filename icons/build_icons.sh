@@ -18,6 +18,12 @@ while getopts ":i" opt; do
 done
 
 [[ -z "${COLOR}" ]] && COLOR="blue1"
+
+# Skip generation if icons already exist (e.g. pre-generated/committed)
+if [[ -f "src/stable/resources/darwin/code.icns" && -f "src/stable/resources/win32/code.ico" && -f "src/stable/resources/linux/code.png" ]]; then
+  echo "Icons already exist in src/stable/resources. Skipping generation."
+  exit 0
+fi
 [[ -z "${QUALITY}" ]] && QUALITY="stable"
 [[ -z "${SRC_PREFIX}" ]] && SRC_PREFIX=""
 [[ -z "${VSCODE_PREFIX}" ]] && VSCODE_PREFIX=""
