@@ -70,7 +70,12 @@ if [[ -d "extensions/latex-workshop" ]]; then
   fi
 
   # Update viewer.html to point to the new location (pdfjs/pdf.mjs instead of build/pdf.mjs)
-  sed -i 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  # This uses sed to patch the HTML file in place.
+  if [[ "${OS_NAME}" == "osx" ]]; then
+    sed -i '' 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  else
+    sed -i 's|src="build/pdf.mjs"|src="pdfjs/pdf.mjs"|' viewer/viewer.html
+  fi
 
   # CRITICAL: Patch the JS config to use the new paths
   # The extension JS (out/viewer/latexworkshop.js) has hardcoded paths like './build/pdf.worker.mjs' and '../cmaps/'.
@@ -81,11 +86,15 @@ if [[ -d "extensions/latex-workshop" ]]; then
   if [ -f "$JS_FILE" ]; then
     echo "Patching $JS_FILE paths..."
     # Fix worker path
-    sed -i "s|workerSrc: './build/pdf.worker.mjs'|workerSrc: './pdfjs/pdf.worker.mjs'|" "$JS_FILE"
-    # Fix cmaps path (was ../cmaps/)
-    sed -i "s|cMapUrl: '../cmaps/'|cMapUrl: './cmaps/'|" "$JS_FILE"
-    # Fix standard fonts path (was ../standard_fonts/)
-    sed -i "s|standardFontDataUrl: '../standard_fonts/'|standardFontDataUrl: './standard_fonts/'|" "$JS_FILE"
+    if [[ "${OS_NAME}" == "osx" ]]; then
+        sed -i '' "s|workerSrc: './build/pdf.worker.mjs'|workerSrc: './pdfjs/pdf.worker.mjs'|" "$JS_FILE"
+        sed -i '' "s|cMapUrl: '../cmaps/'|cMapUrl: './cmaps/'|" "$JS_FILE"
+        sed -i '' "s|standardFontDataUrl: '../standard_fonts/'|standardFontDataUrl: './standard_fonts/'|" "$JS_FILE"
+    else
+        sed -i "s|workerSrc: './build/pdf.worker.mjs'|workerSrc: './pdfjs/pdf.worker.mjs'|" "$JS_FILE"
+        sed -i "s|cMapUrl: '../cmaps/'|cMapUrl: './cmaps/'|" "$JS_FILE"
+        sed -i "s|standardFontDataUrl: '../standard_fonts/'|standardFontDataUrl: './standard_fonts/'|" "$JS_FILE"
+    fi
   else
     echo "WARNING: $JS_FILE not found, could not patch worker path!"
   fi
@@ -101,6 +110,11 @@ if [[ -d "extensions/latex-workshop" ]]; then
   # Local extensions' private node_modules are often skipped or stripped. 
   # By injecting them into the shared pool, we guarantee they are harvested.
   echo "Syncing dependencies to shared extensions folder..."
+  # Ensure shared package.json exists
+  if [ ! -f "../package.json" ]; then
+    echo '{"dependencies":{}}' > "../package.json"
+  fi
+
   node -e "
     const fs = require('fs');
     const lwPkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
