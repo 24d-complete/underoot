@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""bibtexonfly - Auto-installs missing .bst files for bibtex"""
+import subprocess, sys, os, re
+
+def main():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    real_bibtex = os.path.join(script_dir, 'bibtex')
+    tlmgr = os.path.join(script_dir, 'tlmgr')
+    
+    if not os.path.exists(real_bibtex):
+        print(f'Error: bibtex not found at {real_bibtex}', file=sys.stderr)
+        sys.exit(1)
+    
+    args = sys.argv[1:]
+    
+    # Run bibtex
+    proc = subprocess.run([real_bibtex] + args, capture_output=True, text=True)
+    print(proc.stdout, end='')
+    print(proc.stderr, end='', file=sys.stderr)
+    
+    if proc.returncode != 0:
+        # Check for missing .bst
+        match = re.search(r"I couldn't open style file ([^\s]+\.bst)", proc.stdout + proc.stderr)
+        if match:
+            missing = match.group(1)
+            print(f'>>> [bibtexonfly] Missing style: {missing}')
+            
+            # Search for package
+            search = subprocess.run([tlmgr, 'search', '--global', '--file', '/' + missing], 
+                                   capture_output=True, text=True)
+            pkg = None
+            current = None
+            for line in search.stdout.splitlines():
+                line = line.strip()
+                if line.endswith(':') and ' ' not in line:
+                    current = line[:-1]
+                elif missing in line and '/doc/' not in line and current:
+                    pkg = current
+                    break
+            
+            if pkg:
+                print(f'>>> [bibtexonfly] Installing: {pkg}')
+                subprocess.run([tlmgr, 'install', pkg])
+                print('>>> [bibtexonfly] Retrying bibtex...')
+                proc = subprocess.run([real_bibtex] + args)
+                sys.exit(proc.returncode)
+            else:
+                print(f'>>> [bibtexonfly] Package not found for {missing}', file=sys.stderr)
+    
+    sys.exit(proc.returncode)
+
+if __name__ == '__main__':
+    main()
