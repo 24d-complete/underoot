@@ -89,6 +89,12 @@ jobs:
         run: . check_tags.sh
         if: env.SHOULD_DEPLOY == 'yes'
 
+      - name: Setup Underoot TeX
+        uses: ./.github/actions/setup-underoot-tex
+        with:
+          scheme: scheme-basic
+        if: env.SHOULD_BUILD == 'yes'
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

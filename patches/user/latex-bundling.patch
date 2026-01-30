@@ -1,0 +1,891 @@
+diff --git a/build/lib/tex-installer.ts b/build/lib/tex-installer.ts
+index 04b27d9..4491223 100644
+--- a/build/lib/tex-installer.ts
++++ b/build/lib/tex-installer.ts
+@@ -49,6 +49,13 @@ async function main() {
+         // 3. Run Installer
+         await runInstaller(installerPath, profilePath, tempDir);
+ 
++        // 4. Install texliveonfly for automatic package installation
++        console.log(`[TeX Installer] Installing texliveonfly...`);
++        await installPackage(installPath, 'texliveonfly');
++        await installPackage(installPath, 'latexmk');
++        await installPackage(installPath, 'collection-fontsrecommended');
++        await installPackage(installPath, 'collection-latexrecommended');
++
+         console.log(`[TeX Installer] Installation complete!`);
+     } catch (e) {
+         console.error(`[TeX Installer] Installation failed:`, e);
+@@ -129,7 +136,6 @@ TEXDIR ${texDir}
+ TEXMFLOCAL ${texDir}/texmf-local
+ TEXMFSYSCONFIG ${texDir}/texmf-config
+ TEXMFSYSVAR ${texDir}/texmf-var
+-binary_platform ${IS_WINDOWS ? 'windows' : process.platform === 'darwin' ? 'universal-darwin' : 'x86_64-linux'}
+ collection-basic 1
+ collection-latex 1
+ instopt_adjustpath 0
+@@ -185,6 +191,38 @@ async function runInstaller(installerPath: string, profilePath: string, workDir:
+     });
+ }
+ 
++async function installPackage(installPath: string, packageName: string): Promise<void> {
++    console.log(`[TeX Installer] Installing package: ${packageName}`);
++
++    // Find tlmgr binary
++    const binDir = IS_WINDOWS
++        ? path.join(installPath, 'bin', 'windows')
++        : process.platform === 'darwin'
++            ? path.join(installPath, 'bin', 'universal-darwin')
++            : path.join(installPath, 'bin', 'x86_64-linux');
++
++    const tlmgr = path.join(binDir, IS_WINDOWS ? 'tlmgr.bat' : 'tlmgr');
++
++    return new Promise((resolve, reject) => {
++        const child = child_process.spawn(tlmgr, ['install', packageName], {
++            stdio: 'inherit'
++        });
++
++        child.on('close', (code) => {
++            if (code === 0) {
++                console.log(`[TeX Installer] Installed ${packageName}`);
++                resolve();
++            } else {
++                reject(new Error(`Failed to install ${packageName}: exit code ${code}`));
++            }
++        });
++
++        child.on('error', (err) => {
++            reject(err);
++        });
++    });
++}
++
+ 
+ import { fileURLToPath } from 'url';
+ 
+diff --git a/extensions/latex-workshop/package.json b/extensions/latex-workshop/package.json
+index afe4cbe..45701ef 100644
+--- a/extensions/latex-workshop/package.json
++++ b/extensions/latex-workshop/package.json
+@@ -992,7 +992,8 @@
+       "[latex]": {
+         "editor.formatOnPaste": false,
+         "editor.suggestSelection": "recentlyUsedByPrefix"
+-      }
++      },
++      "latex-workshop.latex.recipe.default": "texliveonfly"
+     },
+     "configuration": {
+       "type": "object",
+@@ -1080,6 +1081,12 @@
+               "tools": [
+                 "tectonic"
+               ]
++            },
++            {
++              "name": "texliveonfly",
++              "tools": [
++                "texliveonfly"
++              ]
+             }
+           ],
+           "markdownDescription": "Define LaTeX compiling recipes. Each recipe in the list is an object containing its name and the names of tools to be used sequentially, which are defined in `#latex-workshop.latex.tools#`. By default, the first recipe is used to compile the project. For details, please visit https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-recipes."
+@@ -1242,6 +1249,16 @@
+                 "%DOC%.tex"
+               ],
+               "env": {}
++            },
++            {
++              "name": "texliveonfly",
++              "command": "texliveonfly",
++              "args": [
++                "--compiler=pdflatex",
++                "--arguments=-synctex=1 -interaction=nonstopmode -file-line-error",
++                "%DOC%.tex"
++              ],
++              "env": {}
+             }
+           ],
+           "markdownDescription": "Define LaTeX compiling tools to be used in recipes. Each tool is labeled by its `name`. When invoked, `command` is spawned with arguments defined in `args` and environment variables defined in `env`. Typically no spaces should appear in each argument unless in paths. List of available placeholders: `%DOC%`, `%DOC_W32%, %DOC_EXT%`, `%DOC_EXT_W32%`, `%DOCFILE%`, `%DOCFILE_EXT%`, `%DIR%`, `%DIR_W32%`, `%TMPDIR%` and `%OUTDIR%`, `%OUTDIR_W32%`. Please visit https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#placeholders for a complete list of all placeholders."
+@@ -3008,4 +3025,4 @@
+     "typescript": "^5.7.2",
+     "vscode-extend-language": "0.3.0"
+   }
+-}
++}
+\ No newline at end of file
+diff --git a/src/vs/code/electron-main/main.ts b/src/vs/code/electron-main/main.ts
+index c6a3218..94f15a2 100644
+--- a/src/vs/code/electron-main/main.ts
++++ b/src/vs/code/electron-main/main.ts
+@@ -670,6 +670,7 @@ class CodeMain {
+ 				// ignore
+ 			}
+ 
++			// Default to TeX Live installation path with platform-specific bin directory
+ 			if (!texBinPath) {
+ 				const base = join(home, '.underoot', 'tools', 'texlive', 'bin');
+ 				if (isMacintosh) texBinPath = join(base, 'universal-darwin');
+@@ -678,18 +679,14 @@ class CodeMain {
+ 			}
+ 
+ 			if (texBinPath) {
+-				try {
+-					await promises.access(texBinPath);
+-					const pathKey = isWindows ? 'Path' : 'PATH';
+-					const currentPath = process.env[pathKey] || '';
+-					process.env[pathKey] = texBinPath + (isWindows ? ';' : ':') + currentPath;
+-					console.log(`[Underoot] Injected TeX path: ${texBinPath}`);
+-				} catch {
+-					// ignore
+-				}
++				const pathKey = isWindows ? 'Path' : 'PATH';
++				const currentPath = process.env[pathKey] || '';
++				// Always inject, so it works even if installed later in the session
++				process.env[pathKey] = texBinPath + (isWindows ? ';' : ':') + currentPath;
++				console.log(`[Underoot] Injected TeX Live path: ${texBinPath}`);
+ 			}
+ 		} catch (error) {
+-			console.error('[Underoot] Failed to inject TeX path', error);
++			console.error('[Underoot] Failed to inject TeX Live path', error);
+ 		}
+ 	}
+ }
+diff --git a/src/vs/platform/distribution/common/distribution.ts b/src/vs/platform/distribution/common/distribution.ts
+index cbacd36..d448be8 100644
+--- a/src/vs/platform/distribution/common/distribution.ts
++++ b/src/vs/platform/distribution/common/distribution.ts
+@@ -11,16 +11,19 @@ export const IDistributionService = createDecorator<IDistributionService>('distr
+ export interface IDistributionService {
+ 	readonly _serviceBrand: undefined;
+ 
++	/**
++	 * Emitted when the distribution state changes.
++	 */
+ 	readonly onDidChangeDistribution: Event<void>;
+-	readonly onInstallProgress: Event<any>;
+ 
+ 	/**
+-	 * The current path to the install.
++	 * Emitted when installation progress is updated.
+ 	 */
+-	readonly currentDistroPath: string | undefined;
++	readonly onInstallProgress: Event<{ steps: number; total: number; message: string }>;
+ 
+ 	/**
+-	 * Check if the distribution is installed.
++	 * Checks if a managed TeX distribution exists.
++	 * Returns the path to the bin directory if found.
+ 	 */
+ 	checkDistro(): Promise<string | undefined>;
+ 
+diff --git a/src/vs/platform/distribution/node/distributionService.ts b/src/vs/platform/distribution/node/distributionService.ts
+index ee8b5b2..6ef253e 100644
+--- a/src/vs/platform/distribution/node/distributionService.ts
++++ b/src/vs/platform/distribution/node/distributionService.ts
+@@ -3,124 +3,247 @@
+  *  Licensed under the MIT License. See License.txt in the project root for license information.
+  *--------------------------------------------------------------------------------------------*/
+ 
+-import * as fs from 'fs';
+-import * as path from 'path';
+-import * as os from 'os';
+-import * as child_process from 'child_process';
+-import { Emitter } from '../../../base/common/event.js';
+-import { Disposable } from '../../../base/common/lifecycle.js';
++import { Emitter, Event } from '../../../base/common/event.js';
+ import { IDistributionService } from '../common/distribution.js';
+ import { ILogService } from '../../log/common/log.js';
++import { IEnvironmentService } from '../../environment/common/environment.js';
++import * as path from '../../../base/common/path.js';
++import * as os from 'os';
++import * as fs from 'fs';
++import * as https from 'https';
++import * as child_process from 'child_process';
++import { isWindows, isMacintosh, isLinux } from '../../../base/common/platform.js';
++import { IServerChannel } from '../../../base/parts/ipc/common/ipc.js';
+ 
+-const isWindows = process.platform === 'win32';
+-
+-export class DistributionService extends Disposable implements IDistributionService {
++export class DistributionService implements IDistributionService {
+     declare readonly _serviceBrand: undefined;
+ 
+-    private _currentDistroPath: string | undefined;
+-    private readonly _onDidChangeDistribution = this._register(new Emitter<void>());
++    private readonly _onDidChangeDistribution = new Emitter<void>();
+     readonly onDidChangeDistribution = this._onDidChangeDistribution.event;
+ 
+-    private readonly _onInstallProgress = this._register(new Emitter<any>());
++    private readonly _onInstallProgress = new Emitter<{ steps: number; total: number; message: string }>();
+     readonly onInstallProgress = this._onInstallProgress.event;
+ 
+     constructor(
+-        @ILogService private readonly logService: ILogService
+-    ) {
+-        super();
+-    }
++        @ILogService private readonly logService: ILogService,
++        @IEnvironmentService private readonly environmentService: IEnvironmentService
++    ) { }
+ 
+-    get currentDistroPath(): string | undefined {
+-        return this._currentDistroPath;
++    private getTexLiveBinPath(): string {
++        const home = os.homedir();
++        const base = path.join(home, '.underoot', 'tools', 'texlive', 'bin');
++        if (isMacintosh) return path.join(base, 'universal-darwin');
++        else if (isLinux) return path.join(base, 'x86_64-linux');
++        else return path.join(base, 'windows');
+     }
+ 
+     async checkDistro(): Promise<string | undefined> {
+-        // Simple check
+-        try {
+-            const home = os.homedir();
+-            const installPath = path.join(home, '.underoot', 'tools', 'texlive');
+-            const binRoot = path.join(installPath, 'bin');
+-
+-            if (fs.existsSync(binRoot)) {
+-                // Find executable
+-                const children = await fs.promises.readdir(binRoot);
+-                for (const child of children) {
+-                    const binDir = path.join(binRoot, child);
+-                    if (await this.hasPdfLatex(binDir)) {
+-                        this._updatePath(binDir);
+-                        return binDir;
+-                    }
++        const binPath = this.getTexLiveBinPath();
++        const texliveonfly = path.join(binPath, isWindows ? 'texliveonfly.exe' : 'texliveonfly');
++
++        if (fs.existsSync(texliveonfly)) {
++            this._updatePath(binPath);
++            return binPath;
++        }
++
++        // Check for bundled TeX Live in application resources
++        if (this.environmentService.isBuilt) {
++            const bundledPath = path.join(path.dirname(this.environmentService.appRoot), 'texlive');
++            const bundledBinPath = this.getPlatformBinPath(bundledPath);
++            const bundledTexliveonfly = path.join(bundledBinPath, isWindows ? 'texliveonfly.exe' : 'texliveonfly');
++
++            if (fs.existsSync(bundledTexliveonfly)) {
++                this.logService.info('Found bundled TeX Live. Initializing user installation...');
++                const installPath = path.join(os.homedir(), '.underoot', 'tools', 'texlive');
++
++                try {
++                    // Copy bundled version to user directory
++                    // We use cp -r equivalent. 
++                    await fs.promises.cp(bundledPath, installPath, { recursive: true });
++
++                    this.logService.info('Initialization complete using bundled TeX Live.');
++                    this._updatePath(binPath); // binPath is the standard user path, which we just filled
++                    return binPath;
++                } catch (err) {
++                    this.logService.error('Failed to initialize bundled TeX Live:', err);
+                 }
+             }
+-        } catch (e) {
+-            this.logService.error('Error checking distro', e);
+         }
++
+         return undefined;
+     }
+ 
+-    private async hasPdfLatex(dir: string): Promise<boolean> {
+-        const exe = isWindows ? 'pdflatex.exe' : 'pdflatex';
+-        const fullPath = path.join(dir, exe);
+-        return fs.existsSync(fullPath);
++    private getPlatformBinPath(root: string): string {
++        const base = path.join(root, 'bin');
++        if (isMacintosh) return path.join(base, 'universal-darwin');
++        else if (isLinux) return path.join(base, 'x86_64-linux');
++        else return path.join(base, 'windows');
+     }
+ 
+-    private _updatePath(newPath: string | undefined): void {
+-        if (this._currentDistroPath !== newPath) {
+-            this._currentDistroPath = newPath;
+-            if (newPath) {
+-                // Prepend to PATH for this process tree if possible
+-                process.env.PATH = `${newPath}${path.delimiter}${process.env.PATH}`;
++    async install(): Promise<void> {
++        this.logService.info('Starting TeX Live installation...');
++        const home = os.homedir();
++        const installPath = path.join(home, '.underoot', 'tools', 'texlive');
++
++        this._onInstallProgress.fire({ steps: 5, total: 100, message: 'Downloading TeX Live installer...' });
++
++        try {
++            // Download and run the tex-installer script
++            const tempDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'texlive-'));
++            const installerUrl = isWindows
++                ? 'https://mirror.ctan.org/systems/texlive/tlnet/install-tl-windows.exe'
++                : 'https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz';
++
++            this._onInstallProgress.fire({ steps: 10, total: 100, message: 'Downloading...' });
++
++            const archivePath = path.join(tempDir, isWindows ? 'install-tl.exe' : 'install-tl.tar.gz');
++            await this.downloadFile(installerUrl, archivePath);
++
++            this._onInstallProgress.fire({ steps: 30, total: 100, message: 'Extracting installer...' });
++
++            let installerPath: string;
++            if (isWindows) {
++                installerPath = archivePath;
++            } else {
++                // Extract tarball
++                await new Promise<void>((resolve, reject) => {
++                    const tar = child_process.spawn('tar', ['-xzf', archivePath, '-C', tempDir]);
++                    tar.on('close', (code) => {
++                        if (code === 0) resolve();
++                        else reject(new Error(`tar failed with code ${code}`));
++                    });
++                });
++
++                // Find extracted directory
++                const dirs = fs.readdirSync(tempDir).filter(f =>
++                    f.startsWith('install-tl') && fs.statSync(path.join(tempDir, f)).isDirectory()
++                );
++                installerPath = path.join(tempDir, dirs[0], 'install-tl');
+             }
++
++            this._onInstallProgress.fire({ steps: 40, total: 100, message: 'Creating profile...' });
++
++            // Create profile
++            const profilePath = path.join(tempDir, 'texlive.profile');
++            const texDir = installPath.split(path.sep).join('/');
++            const profile = `
++selected_scheme scheme-basic
++TEXDIR ${texDir}
++TEXMFLOCAL ${texDir}/texmf-local
++TEXMFSYSCONFIG ${texDir}/texmf-config
++TEXMFSYSVAR ${texDir}/texmf-var
++collection-basic 1
++collection-latex 1
++instopt_adjustpath 0
++instopt_adjustrepo 1
++instopt_letter 0
++instopt_portable 1
++instopt_write18_restricted 1
++tlpdbopt_install_docfiles 0
++tlpdbopt_install_srcfiles 0
++`.trim();
++            await fs.promises.writeFile(profilePath, profile);
++
++            this._onInstallProgress.fire({ steps: 50, total: 100, message: 'Installing TeX Live (this may take a few minutes)...' });
++
++            // Run installer
++            await new Promise<void>((resolve, reject) => {
++                this.logService.info(`Running installer: ${installerPath} -profile ${profilePath}`);
++                const child = child_process.spawn(installerPath, ['-profile', profilePath], {
++                    cwd: path.dirname(installerPath)
++                });
++
++                child.stdout.on('data', d => this.logService.info(`[install-tl] ${d.toString().trim()}`));
++                child.stderr.on('data', d => this.logService.error(`[install-tl] ${d.toString().trim()}`));
++
++                child.on('close', (code) => {
++                    if (code === 0) resolve();
++                    else reject(new Error(`Installer failed with code ${code}`));
++                });
++                child.on('error', reject);
++            });
++
++            this._onInstallProgress.fire({ steps: 80, total: 100, message: 'Installing texliveonfly...' });
++
++            // Install texliveonfly
++            const binPath = this.getTexLiveBinPath();
++            const tlmgr = path.join(binPath, isWindows ? 'tlmgr.bat' : 'tlmgr');
++
++            await this.runTlmgr(tlmgr, ['install', 'texliveonfly']);
++            await this.runTlmgr(tlmgr, ['install', 'latexmk']);
++            await this.runTlmgr(tlmgr, ['install', 'collection-fontsrecommended']);
++            await this.runTlmgr(tlmgr, ['install', 'collection-latexrecommended']);
++
++            this._onInstallProgress.fire({ steps: 100, total: 100, message: 'Installation complete!' });
++
++            // Cleanup
++            await fs.promises.rm(tempDir, { recursive: true, force: true });
++
++            this._updatePath(binPath);
++            this.logService.info('TeX Live with texliveonfly installed successfully.');
+             this._onDidChangeDistribution.fire();
++        } catch (error) {
++            this.logService.error('TeX Live installation failed:', error);
++            throw error;
+         }
+     }
+ 
+-    async install(): Promise<void> {
+-        // Re-implementing install logic briefly
+-        // Note: For patch simplicity I will assume the install script is external or simple spawning
+-        // But I need the full logic I wrote earlier?
+-        // Actually, the previous implementation used `tex-installer.ts` logic or similar?
+-        // No, I think I wrote logic to download install-tl.
+-
+-        // Wait, for the sake of the patch, I should assume I need to implement what I HAD.
+-        // Which was: triggering the install.
+-        // I'll refer to my memory of "Debugging Installation" task.
+-        // I integrated `tlmgr install latexmk` into valid install logic.
+-
+-        // I will implement a simplified install that just calls the installer script or fails if not present?
+-        // No, I need real logic.
+-        // Logically, I should shell out to a script `install-tex.sh` if I can?
+-        // Or re-write the installer download code.
+-
+-        // Given I deleted the file, I'll write a stub that says "Implemented in external script" 
+-        // OR better, re-write the `install` method to call the build script or similar.
+-        // ACTUALLY, I can't easily reproduce 200 lines of installer code without seeing it.
+-        // BUT, I can implement the `installPackage` etc which is what I just added.
+-        // And `install` can be a placeholder or call `tlmgr` if installed?
+-
+-        // I will implement `install` as:
+-        this.logService.info('Installation started');
+-        // ... (omitted for brevity in this thought, but I need code to put in file)
+-        // I'll put a basic "install scheme-basic" placeholder or similar.
+-        // Realistically, the user wants the PATCH to contain the logic.
+-        // I'll verify if `build/lib/tex-installer.ts` exists.
+-        // If it does, I can maybe call it?
+-
+-        // Let's implement `installPackage` and `uninstall` fully as they are concise.
+-        // And `install` I will fake or simplistic implementation given I lost the context.
+-        // Wait! The user provided `tex-installer.ts` context in previous turns.
+-        // I can just spawn that script?
+-
+-        // For now, I'll implement `installPackage`, `uninstall`, `findPackageForFile`.
+-        // And `install` as a TODO or basic spawn.
+-
+-        throw new Error('Install not fully recovered.');
++    private runTlmgr(tlmgr: string, args: string[]): Promise<void> {
++        return new Promise((resolve, reject) => {
++            this.logService.info(`运行 tlmgr: ${tlmgr} ${args.join(' ')}`);
++            const child = child_process.spawn(tlmgr, args);
++
++            child.stdout.on('data', d => this.logService.info(`[tlmgr] ${d.toString().trim()}`));
++            child.stderr.on('data', d => this.logService.error(`[tlmgr] ${d.toString().trim()}`));
++
++            child.on('close', (code) => {
++                if (code === 0) resolve();
++                else reject(new Error(`tlmgr ${args.join(' ')} failed with code ${code}`));
++            });
++            child.on('error', reject);
++        });
++    }
++
++    private downloadFile(url: string, destPath: string): Promise<void> {
++        return new Promise((resolve, reject) => {
++            const file = fs.createWriteStream(destPath);
++
++            const request = (urlStr: string) => {
++                https.get(urlStr, (response) => {
++                    // Handle all redirect codes (301, 302, 307, 308)
++                    if (response.statusCode && response.statusCode >= 300 && response.statusCode < 400) {
++                        const redirectUrl = response.headers.location;
++                        if (redirectUrl) {
++                            request(redirectUrl);
++                            return;
++                        }
++                    }
++
++                    if (response.statusCode !== 200) {
++                        reject(new Error(`Failed to download: HTTP ${response.statusCode}`));
++                        return;
++                    }
++
++                    response.pipe(file);
++                    file.on('finish', () => {
++                        file.close();
++                        resolve();
++                    });
++                }).on('error', (err) => {
++                    fs.unlink(destPath, () => { });
++                    reject(err);
++                });
++            };
++
++            request(url);
++        });
+     }
+ 
+     async uninstall(): Promise<void> {
+         this.logService.info('Uninstalling TeX Live...');
+         const home = os.homedir();
+         const installPath = path.join(home, '.underoot', 'tools', 'texlive');
++
+         try {
+             await fs.promises.rm(installPath, { recursive: true, force: true });
+             this.logService.info('Uninstalled successfully.');
+@@ -133,55 +256,56 @@ export class DistributionService extends Disposable implements IDistributionServ
+     }
+ 
+     async installPackage(packageName: string): Promise<void> {
+-        const tlmgr = await this.getTlmgrPath();
+-        this.logService.info(`Installing package ${packageName}...`);
+-        return new Promise((resolve, reject) => {
+-            const proc = child_process.spawn(tlmgr, ['install', packageName], { stdio: 'pipe' });
+-            proc.stdout?.on('data', d => this.logService.info(`[tlmgr] ${d}`));
+-            proc.stderr?.on('data', d => this.logService.error(`[tlmgr] ${d}`));
+-            proc.on('close', (code) => {
+-                if (code === 0) resolve();
+-                else reject(new Error(`tlmgr install ${packageName} failed with code ${code}`));
+-            });
+-        });
++        this.logService.info(`Installing package: ${packageName}`);
++        const binPath = this.getTexLiveBinPath();
++        const tlmgr = path.join(binPath, isWindows ? 'tlmgr.bat' : 'tlmgr');
++        await this.runTlmgr(tlmgr, ['install', packageName]);
+     }
+ 
+     async findPackageForFile(fileName: string): Promise<string | undefined> {
+-        try {
+-            const tlmgr = await this.getTlmgrPath();
+-            return await new Promise((resolve, reject) => {
+-                let output = '';
+-                const proc = child_process.spawn(tlmgr, ['search', '--file', fileName], { stdio: 'pipe' });
+-                proc.stdout?.on('data', d => output += d.toString());
+-                proc.on('close', (code) => {
+-                    if (code === 0) {
+-                        const lines = output.split('\n');
+-                        for (const line of lines) {
+-                            if (line.endsWith(':')) {
+-                                resolve(line.replace(':', '').trim());
+-                                return;
+-                            }
+-                        }
+-                        resolve(undefined);
+-                    } else {
+-                        reject(new Error(`tlmgr search failed with code ${code}`));
+-                    }
+-                });
++        const binPath = this.getTexLiveBinPath();
++        const tlmgr = path.join(binPath, isWindows ? 'tlmgr.bat' : 'tlmgr');
++
++        return new Promise((resolve) => {
++            const child = child_process.spawn(tlmgr, ['search', '--file', fileName]);
++            let output = '';
++            child.stdout?.on('data', (data) => { output += data.toString(); });
++            child.on('close', () => {
++                const match = output.match(/^(\S+):$/m);
++                resolve(match ? match[1] : undefined);
+             });
+-        } catch (e) { return undefined; }
++            child.on('error', () => resolve(undefined));
++        });
+     }
+ 
+-    private async getTlmgrPath(): Promise<string> {
+-        const home = os.homedir();
+-        const installPath = path.join(home, '.underoot', 'tools', 'texlive');
+-        const binRoot = path.join(installPath, 'bin');
+-        if (!fs.existsSync(binRoot)) throw new Error('TeX Live bin not found');
+-        const children = await fs.promises.readdir(binRoot);
+-        for (const child of children) {
+-            const binDir = path.join(binRoot, child);
+-            const tlmgr = path.join(binDir, isWindows ? 'tlmgr.bat' : 'tlmgr');
+-            if (fs.existsSync(tlmgr)) return tlmgr;
++    private _updatePath(binDir: string | undefined): void {
++        if (binDir) {
++            if (!process.env.PATH?.includes(binDir)) {
++                process.env.PATH = `${binDir}${path.delimiter}${process.env.PATH}`;
++            }
++        }
++    }
++}
++
++export class DistributionChannel implements IServerChannel {
++    constructor(private service: IDistributionService) { }
++
++    listen<T>(_ctx: string, event: string): Event<T> {
++        switch (event) {
++            case 'onDidChangeDistribution': return this.service.onDidChangeDistribution as Event<T>;
++            case 'onInstallProgress': return this.service.onInstallProgress as Event<T>;
++        }
++        throw new Error(`Event not found: ${event}`);
++    }
++
++    call<T>(_ctx: string, command: string, arg?: any): Promise<T> {
++        switch (command) {
++            case 'checkDistro': return this.service.checkDistro() as Promise<T>;
++            case 'install': return this.service.install() as Promise<T>;
++            case 'uninstall': return this.service.uninstall() as Promise<T>;
++            case 'installPackage': return this.service.installPackage(arg as string) as Promise<T>;
++            case 'findPackageForFile': return this.service.findPackageForFile(arg as string) as Promise<T>;
+         }
+-        throw new Error('tlmgr not found');
++        throw new Error(`Command not found: ${command}`);
+     }
+ }
+diff --git a/src/vs/workbench/services/distribution/browser/distribution.contribution.ts b/src/vs/workbench/services/distribution/browser/distribution.contribution.ts
+index 5e0465a..bf1e34e 100644
+--- a/src/vs/workbench/services/distribution/browser/distribution.contribution.ts
++++ b/src/vs/workbench/services/distribution/browser/distribution.contribution.ts
+@@ -7,49 +7,68 @@ import { Registry } from '../../../../platform/registry/common/platform.js';
+ import { IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions, IWorkbenchContribution } from '../../../common/contributions.js';
+ import { LifecyclePhase } from '../../../services/lifecycle/common/lifecycle.js';
+ import { IDistributionService } from '../../../../platform/distribution/common/distribution.js';
+-import './distributionService.js';
+-
++import { Disposable } from '../../../../base/common/lifecycle.js';
+ import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
+ import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from '../../../../platform/configuration/common/configurationRegistry.js';
+ import { INotificationService } from '../../../../platform/notification/common/notification.js';
+ import { MenuRegistry, MenuId } from '../../../../platform/actions/common/actions.js';
+ import { IDialogService } from '../../../../platform/dialogs/common/dialogs.js';
+-import { IFileService } from '../../../../platform/files/common/files.js';
+-import { IEditorService } from '../../../services/editor/common/editorService.js';
+ import { IProgressService, ProgressLocation } from '../../../../platform/progress/common/progress.js';
++import './distributionService.js';
+ 
+-class DistributionManagerContribution implements IWorkbenchContribution {
++class DistributionManagerContribution extends Disposable implements IWorkbenchContribution {
+     constructor(
+-        @IDistributionService distributionService: IDistributionService
++        @IDistributionService _distributionService: IDistributionService,
++        @INotificationService _notificationService: INotificationService,
++        @IProgressService _progressService: IProgressService
+     ) {
+-        // service instantiation triggers the check
++        super();
+     }
+ }
+ 
+ Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
+     .registerWorkbenchContribution(DistributionManagerContribution, LifecyclePhase.Restored);
+ 
++Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
++    id: 'underoot',
++    order: 1,
++    title: 'Underoot TeX',
++    type: 'object',
++    properties: {
++        'underoot.tex.autoInstallPackages': {
++            type: 'boolean',
++            default: true,
++            description: 'Automatically install missing TeX packages using texliveonfly.'
++        }
++    }
++});
++
+ const installCommandId = 'underoot.installDistro';
+-const checkCommandId = 'underoot.checkDistro';
+ const uninstallCommandId = 'underoot.uninstallDistro';
+-const fixCommandId = 'underoot.fixMissingPackages';
+ 
+ CommandsRegistry.registerCommand(installCommandId, async (accessor) => {
+     const service = accessor.get(IDistributionService);
++    const notificationService = accessor.get(INotificationService);
++    const progressService = accessor.get(IProgressService);
++
+     try {
+-        await service.install();
++        await progressService.withProgress({
++            location: ProgressLocation.Notification,
++            title: 'Installing TeX Live with texliveonfly...',
++            cancellable: false
++        }, async (progress) => {
++            const disposable = service.onInstallProgress(({ message }) => {
++                progress.report({ message });
++            });
++            try {
++                await service.install();
++            } finally {
++                disposable.dispose();
++            }
++        });
++        notificationService.info('TeX Live with texliveonfly installed successfully!');
+     } catch (err) {
+-        accessor.get(INotificationService).error(`Installation failed: ${err}`);
+-    }
+-});
+-
+-CommandsRegistry.registerCommand(checkCommandId, async (accessor) => {
+-    const service = accessor.get(IDistributionService);
+-    const path = await service.checkDistro();
+-    if (path) {
+-        accessor.get(INotificationService).info(`TeX Distribution found at: ${path}`);
+-    } else {
+-        accessor.get(INotificationService).info('No TeX Distribution found.');
++        notificationService.error(`TeX Live installation failed: ${err}`);
+     }
+ });
+ 
+@@ -59,8 +78,8 @@ CommandsRegistry.registerCommand(uninstallCommandId, async (accessor) => {
+     const notificationService = accessor.get(INotificationService);
+ 
+     const result = await dialogService.confirm({
+-        message: 'Uninstall TeX Distribution?',
+-        detail: 'This will remove the local TeX Live installation (~/.underoot/tools/texlive). This action cannot be undone.',
++        message: 'Uninstall TeX Live?',
++        detail: 'This will remove the TeX Live installation (~/.underoot/tools/texlive). This action cannot be undone.',
+         primaryButton: 'Uninstall',
+         type: 'warning'
+     });
+@@ -68,118 +87,16 @@ CommandsRegistry.registerCommand(uninstallCommandId, async (accessor) => {
+     if (result.confirmed) {
+         try {
+             await service.uninstall();
+-            notificationService.info('TeX Distribution uninstalled successfully.');
++            notificationService.info('TeX Live uninstalled successfully.');
+         } catch (err) {
+             notificationService.error(`Uninstall failed: ${err}`);
+         }
+     }
+ });
+ 
+-CommandsRegistry.registerCommand(fixCommandId, async (accessor) => {
+-    const editorService = accessor.get(IEditorService);
+-    const fileService = accessor.get(IFileService);
+-    const service = accessor.get(IDistributionService);
+-    const notificationService = accessor.get(INotificationService);
+-    const dialogService = accessor.get(IDialogService);
+-    const progressService = accessor.get(IProgressService);
+-
+-    const activeResource = editorService.activeEditor?.resource;
+-    if (!activeResource || !activeResource.path.endsWith('.tex')) {
+-        notificationService.warn('Please open a .tex file to scan for missing packages.');
+-        return;
+-    }
+-
+-    const logResource = activeResource.with({ path: activeResource.path.replace(/\.tex$/i, '.log') });
+-
+-    try {
+-        const content = await fileService.readFile(logResource);
+-        const logText = content.value.toString();
+-
+-        const missingFiles = new Set<string>();
+-        const lines = logText.split('\n');
+-        for (const line of lines) {
+-            const matchSty = line.match(/! LaTeX Error: File `([^']+)'/);
+-            if (matchSty) missingFiles.add(matchSty[1]);
+-
+-            const matchFont = line.match(/Metric \(TFM\) file not found/);
+-            const matchTfm = line.match(/=([a-zA-Z0-9]+)\s+at/);
+-            if (matchFont && matchTfm) {
+-                missingFiles.add(matchTfm[1] + '.tfm');
+-            }
+-        }
+-
+-        if (missingFiles.size === 0) {
+-            notificationService.info('No missing packages identified.');
+-            return;
+-        }
+-
+-        const packagesToInstall = new Set<string>();
+-
+-        await progressService.withProgress({
+-            location: ProgressLocation.Notification,
+-            title: 'Resolving missing packages...'
+-        }, async (progress) => {
+-            for (const file of missingFiles) {
+-                progress.report({ message: `Searching for ${file}...` });
+-                try {
+-                    const pkg = await service.findPackageForFile(file);
+-                    if (pkg) packagesToInstall.add(pkg);
+-                } catch (e) { console.error(e); }
+-            }
+-        });
+-
+-        if (packagesToInstall.size === 0) {
+-            notificationService.warn(`Could not resolve packages.`);
+-            return;
+-        }
+-
+-        const result = await dialogService.confirm({
+-            message: 'Install missing packages?',
+-            detail: `Found: ${Array.from(packagesToInstall).join(', ')}`,
+-            primaryButton: 'Install'
+-        });
+-
+-        if (result.confirmed) {
+-            await progressService.withProgress({
+-                location: ProgressLocation.Notification,
+-                title: 'Installing packages...'
+-            }, async (progress) => {
+-                for (const pkg of packagesToInstall) {
+-                    progress.report({ message: `Installing ${pkg}...` });
+-                    await service.installPackage(pkg);
+-                }
+-            });
+-            notificationService.info('Packages installed. Please rebuild.');
+-        }
+-
+-    } catch (err) {
+-        notificationService.error(`Could not read log file: ${err}`);
+-    }
+-});
+-
+ MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+-    command: { id: installCommandId, title: 'Underoot: Install TeX Distribution' }
++    command: { id: installCommandId, title: 'Underoot: Install TeX Live' }
+ });
+ MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+-    command: { id: checkCommandId, title: 'Underoot: Check TeX Distribution' }
+-});
+-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+-    command: { id: uninstallCommandId, title: 'Underoot: Uninstall TeX Distribution' }
+-});
+-MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+-    command: { id: fixCommandId, title: 'Underoot: Fix Missing Packages' }
+-});
+-
+-Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
+-    id: 'underoot',
+-    order: 1,
+-    title: 'Underoot TeX',
+-    type: 'object',
+-    properties: {
+-        'underoot.tex.mirror': {
+-            type: 'string',
+-            default: 'https://mirror.ctan.org',
+-            description: 'CTAN Mirror URL.'
+-        }
+-    }
++    command: { id: uninstallCommandId, title: 'Underoot: Uninstall TeX Live' }
+ });
+diff --git a/src/vs/workbench/services/distribution/browser/distributionService.ts b/src/vs/workbench/services/distribution/browser/distributionService.ts
+index c984cd9..2f1d69a 100644
+--- a/src/vs/workbench/services/distribution/browser/distributionService.ts
++++ b/src/vs/workbench/services/distribution/browser/distributionService.ts
+@@ -23,7 +23,7 @@ export class WorkbenchDistributionService extends Disposable implements IDistrib
+     private readonly _onDidChangeDistribution = this._register(new Emitter<void>());
+     readonly onDidChangeDistribution = this._onDidChangeDistribution.event;
+ 
+-    private readonly _onInstallProgress = this._register(new Emitter<any>());
++    private readonly _onInstallProgress = this._register(new Emitter<{ steps: number; total: number; message: string }>());
+     readonly onInstallProgress = this._onInstallProgress.event;
+ 
+     constructor(
+@@ -87,9 +87,9 @@ export class WorkbenchDistributionService extends Disposable implements IDistrib
+         if (!this._currentDistroPath) {
+             this.notificationService.prompt(
+                 Severity.Info,
+-                'Underoot requires TeX Live. Install now?',
++                'Underoot requires TeX Live to function properly. Would you like to install it now?',
+                 [{
+-                    label: 'Install',
++                    label: 'Install TeX Live',
+                     run: () => this.runInstall()
+                 }, {
+                     label: 'Later',
+@@ -107,14 +107,16 @@ export class WorkbenchDistributionService extends Disposable implements IDistrib
+         }, async (progress) => {
+             progress.report({ message: 'Starting...' });
+ 
+-            // Proxy progress events to UI
+-            const listener = this.onInstallProgress(e => {
+-                progress.report({ message: e.message, increment: e.steps });
++            const listener = this.proxy.onInstallProgress(e => {
++                progress.report({
++                    message: e.message,
++                    increment: 0 // We don't have absolute here yet
++                });
+             });
+ 
+             try {
+                 await this.install();
+-                this.notificationService.info('Installed successfully.');
++                this.notificationService.info('TeX Live installed successfully.');
+             } catch (error) {
+                 this.notificationService.error(`Installation failed: ${error}`);
+             } finally {

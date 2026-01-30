@@ -32,6 +32,29 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
     npm run gulp "vscode-darwin-${VSCODE_ARCH}-min-ci"
 
+    # BUNDLE TEX LIVE
+    echo "Bundling TeX Live..."
+    TEX_SRC="$HOME/.underoot/tools/texlive"
+    # App name might vary (VSCodium or Underoot), check what was built
+    # Based on prepare_vscode.sh, it seems to be VSCodium-Insiders or Underoot
+    # But the output folder usually contains the .app
+    APP_PATH="../VSCode-darwin-${VSCODE_ARCH}/VSCodium.app"
+    if [ ! -d "$APP_PATH" ]; then
+        # fallback for Insiders or different naming
+        APP_PATH=$(find "../VSCode-darwin-${VSCODE_ARCH}" -name "*.app" | head -n 1)
+    fi
+
+    TEX_DEST="$APP_PATH/Contents/Resources/texlive"
+    
+    if [ -d "$TEX_SRC" ] && [ ! -z "$APP_PATH" ]; then
+        echo "Copying from $TEX_SRC to $TEX_DEST"
+        mkdir -p "$(dirname "$TEX_DEST")"
+        cp -R "$TEX_SRC" "$TEX_DEST"
+        echo "TeX Live bundled successfully."
+    else
+        echo "Warning: TeX Live source not found at $TEX_SRC or App not found. Skipping bundling."
+    fi
+
     find "../VSCode-darwin-${VSCODE_ARCH}" -print0 | xargs -0 touch -c
 
     . ../build_cli.sh
