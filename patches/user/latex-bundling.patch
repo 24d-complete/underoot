@@ -720,7 +720,7 @@ index 0000000..1234567
 +import { DISRIBUTION_IPC_CHANNEL_NAME } from '../../../../platform/distribution/common/distributionIpc.js';
 +import { registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
 +import { IRemoteAgentService } from '../../remote/common/remoteAgentService.js';
-+import { IMainProcessService } from '../../../../platform/ipc/common/mainProcessService.js';
++
 +import { ProxyChannel } from '../../../../base/parts/ipc/common/ipc.js';
 +import { INotificationService, Severity } from '../../../../platform/notification/common/notification.js';
 +import { IProgressService, ProgressLocation } from '../../../../platform/progress/common/progress.js';
@@ -739,7 +739,7 @@ index 0000000..1234567
 +
 +    constructor(
 +        @IRemoteAgentService remoteAgentService: IRemoteAgentService,
-+        @IMainProcessService mainProcessService: IMainProcessService,
++        
 +        @INotificationService private readonly notificationService: INotificationService,
 +        @IProgressService private readonly progressService: IProgressService
 +    ) {
