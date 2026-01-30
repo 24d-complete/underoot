@@ -246,7 +246,7 @@ index 0000000..1234567
 +import { Emitter, Event } from '../../../base/common/event.js';
 +import { IDistributionService } from '../common/distribution.js';
 +import { ILogService } from '../../log/common/log.js';
-+import { IEnvironmentService } from '../../environment/common/environment.js';
++import { IEnvironmentService, INativeEnvironmentService } from '../../environment/common/environment.js';
 +import * as path from '../../../base/common/path.js';
 +import * as os from 'os';
 +import * as fs from 'fs';
@@ -288,7 +288,7 @@ index 0000000..1234567
 +
 +        // Check for bundled TeX Live in application resources
 +        if (this.environmentService.isBuilt) {
-+            const bundledPath = path.join(path.dirname(this.environmentService.appRoot), 'texlive');
++            const bundledPath = path.join(path.dirname((this.environmentService as INativeEnvironmentService).appRoot), 'texlive');
 +            const bundledBinPath = this.getPlatformBinPath(bundledPath);
 +            const bundledTexliveonfly = path.join(bundledBinPath, isWindows ? 'texliveonfly.exe' : 'texliveonfly');
 +
@@ -971,3 +971,15 @@ index 0000000..1234567
 -}
 +}
 \ No newline at end of file
+diff --git a/src/vs/platform/distribution/common/distributionIpc.ts b/src/vs/platform/distribution/common/distributionIpc.ts
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/vs/platform/distribution/common/distributionIpc.ts
+@@ -0,0 +1,6 @@
++/*---------------------------------------------------------------------------------------------
++ *  Copyright (c) Underoot. All rights reserved.
++ *  Licensed under the MIT License. See License.txt in the project root for license information.
++ *--------------------------------------------------------------------------------------------*/
++
++export const DISRIBUTION_IPC_CHANNEL_NAME = 'distribution';
