@@ -235,7 +235,7 @@ index 0000000..1234567
 +    main().catch(console.error);
 +}
 +
---- /dev/null	2026-01-30 22:42:24
+--- /dev/null	2026-01-30 22:47:41
 +++ b/src/vs/platform/distribution/node/distributionService.ts
 @@ -0,0 +1,311 @@
 +/*---------------------------------------------------------------------------------------------
@@ -549,7 +549,7 @@ index 0000000..1234567
 +        throw new Error(`Command not found: ${command}`);
 +    }
 +}
---- /dev/null	2026-01-30 22:42:55
+--- /dev/null	2026-01-30 22:47:47
 +++ b/src/vs/platform/distribution/common/distribution.ts
 @@ -0,0 +1,49 @@
 +/*---------------------------------------------------------------------------------------------
@@ -601,7 +601,7 @@ index 0000000..1234567
 +	 */
 +	uninstall(): Promise<void>;
 +}
---- /dev/null	2026-01-30 22:42:55
+--- /dev/null	2026-01-30 22:47:52
 +++ b/src/vs/workbench/services/distribution/browser/distribution.contribution.ts
 @@ -0,0 +1,102 @@
 +/*---------------------------------------------------------------------------------------------
@@ -706,7 +706,7 @@ index 0000000..1234567
 +MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 +    command: { id: uninstallCommandId, title: 'Underoot: Uninstall TeX Live' }
 +});
---- /dev/null	2026-01-30 22:42:55
+--- /dev/null	2026-01-30 22:47:58
 +++ b/src/vs/workbench/services/distribution/browser/distributionService.ts
 @@ -0,0 +1,129 @@
 +/*---------------------------------------------------------------------------------------------
@@ -838,10 +838,92 @@ index 0000000..1234567
 +}
 +
 +registerSingleton(IDistributionService, WorkbenchDistributionService, 1 /* InstantiationType.Delayed */);
-diff --git a/extensions/latex-workshop/package.json b/extensions/latex-workshop/package.json
-index afe4cbe..45701ef 100644
---- a/extensions/latex-workshop/package.json
-+++ b/extensions/latex-workshop/package.json
+--- a/src/vs/code/electron-main/main.ts	2026-01-30 22:47:10
++++ b/src/vs/code/electron-main/main.ts	2026-01-30 21:52:19
+@@ -16,7 +16,8 @@
+ import { Event } from '../../base/common/event.js';
+ import { getPathLabel } from '../../base/common/labels.js';
+ import { Schemas } from '../../base/common/network.js';
+-import { basename, resolve } from '../../base/common/path.js';
++import { homedir } from 'os';
++import { basename, resolve, join } from '../../base/common/path.js';
+ import { mark } from '../../base/common/performance.js';
+ import { IProcessEnvironment, isLinux, isMacintosh, isWindows, OS } from '../../base/common/platform.js';
+ import { cwd } from '../../base/common/process.js';
+@@ -74,6 +75,8 @@
+ import { addUNCHostToAllowlist, getUNCHost } from '../../base/node/unc.js';
+ import { ThemeMainService } from '../../platform/theme/electron-main/themeMainServiceImpl.js';
+ import { LINUX_SYSTEM_POLICY_FILE_PATH } from '../../base/common/policy.js';
++import { IDistributionService } from '../../platform/distribution/common/distribution.js';
++import { DistributionService } from '../../platform/distribution/node/distributionService.js';
+ 
+ /**
+  * The main VS Code entry point.
+@@ -100,6 +103,9 @@
+ 		// default electron error dialog popping up
+ 		setUnexpectedErrorHandler(err => console.error(err));
+ 
++		// Underoot: Inject TeX Path
++		await this.injectTeXPath();
++
+ 		// Create services
+ 		const [instantiationService, instanceEnvironment, environmentMainService, configurationService, stateMainService, bufferLogger, productService, userDataProfilesMainService] = this.createServices();
+ 
+@@ -244,6 +250,9 @@
+ 		// Protocol (instantiated early and not using sync descriptor for security reasons)
+ 		services.set(IProtocolMainService, new ProtocolMainService(environmentMainService, userDataProfilesMainService, logService));
+ 
++		// Distribution
++		services.set(IDistributionService, new SyncDescriptor(DistributionService));
++
+ 		return [new InstantiationService(services, true), instanceEnvironment, environmentMainService, configurationService, stateService, bufferLogger, productService, userDataProfilesMainService];
+ 	}
+ 
+@@ -644,6 +653,42 @@
+ 	}
+ 
+ 	//#endregion
++
++	private async injectTeXPath(): Promise<void> {
++		try {
++			const home = homedir();
++			const configPath = resolve(join(home, '.underoot', 'config.json'));
++			let texBinPath: string | undefined;
++
++			try {
++				const content = await promises.readFile(configPath, 'utf8');
++				const config = JSON.parse(content);
++				if (config.texPath && typeof config.texPath === 'string') {
++					texBinPath = config.texPath;
++				}
++			} catch (error) {
++				// ignore
++			}
++
++			// Default to TeX Live installation path with platform-specific bin directory
++			if (!texBinPath) {
++				const base = join(home, '.underoot', 'tools', 'texlive', 'bin');
++				if (isMacintosh) texBinPath = join(base, 'universal-darwin');
++				else if (isLinux) texBinPath = join(base, 'x86_64-linux');
++				else if (isWindows) texBinPath = join(base, 'windows');
++			}
++
++			if (texBinPath) {
++				const pathKey = isWindows ? 'Path' : 'PATH';
++				const currentPath = process.env[pathKey] || '';
++				// Always inject, so it works even if installed later in the session
++				process.env[pathKey] = texBinPath + (isWindows ? ';' : ':') + currentPath;
++				console.log(`[Underoot] Injected TeX Live path: ${texBinPath}`);
++			}
++		} catch (error) {
++			console.error('[Underoot] Failed to inject TeX Live path', error);
++		}
++	}
+ }
+ 
+ // Main Startup
+--- a/extensions/latex-workshop/package.json	2026-01-30 22:48:20
++++ b/extensions/latex-workshop/package.json	2026-01-30 22:48:20
 @@ -992,7 +992,8 @@
        "[latex]": {
          "editor.formatOnPaste": false,
@@ -852,19 +934,19 @@ index afe4cbe..45701ef 100644
      },
      "configuration": {
        "type": "object",
-@@ -1080,6 +1081,12 @@
+@@ -1079,6 +1080,12 @@
+               "name": "tectonic",
                "tools": [
                  "tectonic"
-               ]
++              ]
 +            },
 +            {
 +              "name": "texliveonfly",
 +              "tools": [
 +                "texliveonfly"
-+              ]
+               ]
              }
            ],
-           "markdownDescription": "Define LaTeX compiling recipes. Each recipe in the list is an object containing its name and the names of tools to be used sequentially, which are defined in `#latex-workshop.latex.tools#`. By default, the first recipe is used to compile the project. For details, please visit https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-recipes."
 @@ -1242,6 +1249,16 @@
                  "%DOC%.tex"
                ],
@@ -889,40 +971,3 @@ index afe4cbe..45701ef 100644
 -}
 +}
 \ No newline at end of file
-diff --git a/src/vs/code/electron-main/main.ts b/src/vs/code/electron-main/main.ts
-index c6a3218..94f15a2 100644
---- a/src/vs/code/electron-main/main.ts
-+++ b/src/vs/code/electron-main/main.ts
-@@ -670,6 +670,7 @@ class CodeMain {
- 				// ignore
- 			}
- 
-+			// Default to TeX Live installation path with platform-specific bin directory
- 			if (!texBinPath) {
- 				const base = join(home, '.underoot', 'tools', 'texlive', 'bin');
- 				if (isMacintosh) texBinPath = join(base, 'universal-darwin');
-@@ -678,18 +679,14 @@ class CodeMain {
- 			}
- 
- 			if (texBinPath) {
--				try {
--					await promises.access(texBinPath);
--					const pathKey = isWindows ? 'Path' : 'PATH';
--					const currentPath = process.env[pathKey] || '';
--					process.env[pathKey] = texBinPath + (isWindows ? ';' : ':') + currentPath;
--					console.log(`[Underoot] Injected TeX path: ${texBinPath}`);
--				} catch {
--					// ignore
--				}
-+				const pathKey = isWindows ? 'Path' : 'PATH';
-+				const currentPath = process.env[pathKey] || '';
-+				// Always inject, so it works even if installed later in the session
-+				process.env[pathKey] = texBinPath + (isWindows ? ';' : ':') + currentPath;
-+				console.log(`[Underoot] Injected TeX Live path: ${texBinPath}`);
- 			}
- 		} catch (error) {
--			console.error('[Underoot] Failed to inject TeX path', error);
-+			console.error('[Underoot] Failed to inject TeX Live path', error);
- 		}
- 	}
- }
