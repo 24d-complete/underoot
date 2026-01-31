@@ -68,6 +68,12 @@ rm -rf texlive_installer
 
 echo ">>> TeX Live installed to $TARGET_DIR"
 
+# [FIX] Remove broken symlinks causing build failures
+# The installer creates man/info symlinks in bin/ pointing to non-existent doc folders
+echo ">>> Cleaning up broken symlinks (man, info)..."
+find "$TARGET_DIR/bin" -type l -name "man" -delete
+find "$TARGET_DIR/bin" -type l -name "info" -delete
+
 # Find tlmgr to install updates and packages
 # The binary path depends on the platform
 BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d | head -n 1)
