@@ -153,9 +153,8 @@ if [[ "$OS_NAME" == "windows" ]]; then
     BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | head -n 1)
   fi
 
-  # [FIX] Remove bundled Perl on Windows to fix EMFILE errors
-  # The bundled Perl (tlpkg/tlperl) contains thousands of files that cause build failures.
-  # We will rely on the system Perl (which is standard in GH runners) to run tlmgr/latexmk.
+  # [Windows Optimization]
+  # 1. Remove bundled Perl (tlpkg/tlperl) to save file count/space. System Perl is used.
   if [[ -d "$TARGET_DIR/tlpkg/tlperl" ]]; then
     echo ">>> Removing bundled Perl (tlpkg/tlperl) to save file count..."
     rm -rf "$TARGET_DIR/tlpkg/tlperl"
@@ -193,10 +192,88 @@ if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
   "$TLMGR_CMD" option repository "$TL_REPOSITORY"
   
   # Install requested packages
-  # We MUST include collection-fontsrecommended for basic functionality
+  # We include collection-fontsrecommended for full functionality.
+  # On Windows, we'll zip the result to avoid EMFILE.
   "$TLMGR_CMD" install texliveonfly collection-fontsrecommended latexmk
   
   echo ">>> TeX Live setup complete."
+
+  # [Windows Optimization]
+  # Zip the entire TeX Live directory to a single file to bypass EMFILE errors during build.
+  # The extension logic must unzip this on first run.
+  if [[ "$OS_NAME" == "windows" ]]; then
+    echo ">>> Zipping TeX Live directory for Windows..."
+    
+    # We are in the parent of TARGET_DIR usually? 
+    # TARGET_DIR is full path. Let's go to its parent.
+    PARENT_DIR=$(dirname "$TARGET_DIR")
+    BASENAME=$(basename "$TARGET_DIR")
+    cd "$PARENT_DIR"
+    
+    # Use 7z for speed and compression if avail, else tar
+    if command -v 7z &> /dev/null; then
+       7z a -tzip "${BASENAME}.zip" "$BASENAME"
+    elif command -v tar &> /dev/null; then
+       tar -cf "${BASENAME}.zip" --format=zip "$BASENAME"
+    else 
+       echo "ERROR: No zip tool found!"
+       exit 1
+    fi
+    
+    echo ">>> Zipping complete. Removing original directory..."
+    rm -rf "$BASENAME"
+    echo ">>> Original directory removed. Only ${BASENAME}.zip remains."
+
+    # [Windows Optimization] Patch main.js to unzip texlive.zip at runtime
+    # This is necessary because main.js is a build artifact (ignored by git)
+    EXTENSION_DIR=$(dirname "$TARGET_DIR")
+    MAIN_JS="$EXTENSION_DIR/out/src/main.js"
+    
+    if [[ -f "$MAIN_JS" ]]; then
+       echo ">>> Patching $MAIN_JS to support runtime unzipping..."
+       node -e "
+const fs = require('fs');
+const file = process.argv[1];
+try {
+  let content = fs.readFileSync(file, 'utf8');
+  const injection = \`
+      // [Windows Optimization] Check for texlive.zip
+      if (process.platform === 'win32' && require('fs').existsSync(require('path').join(searchDir, 'texlive.zip'))) {
+          // If zip exists but directory doesn't, unzip it
+          if (!require('fs').existsSync(require('path').join(searchDir, 'texlive'))) {
+              try {
+                  console.log('[latex-workshop] Unzipping bundled TeX Live...');
+                  const zipPath = require('path').join(searchDir, 'texlive.zip');
+                  require('child_process').execSync('tar -xf \"texlive.zip\"', { cwd: searchDir });
+                  foundDir = require('path').join(searchDir, 'texlive');
+                  if (foundDir) break;
+              } catch (e) {
+                  console.error('[latex-workshop] Failed to unzip texlive:', e);
+              }
+          }
+      }
+  \`;
+  
+  // Inject before directory traversal
+  const anchor = 'const parent = path.dirname(searchDir);';
+  if (content.includes(anchor)) {
+      content = content.replace(anchor, injection + '\\n      ' + anchor);
+      fs.writeFileSync(file, content);
+      console.log('Successfully patched main.js');
+  } else {
+      console.error('ERROR: Could not find anchor in main.js');
+      process.exit(1);
+  }
+} catch (e) {
+  console.error('ERROR patching main.js:', e);
+  process.exit(1);
+}
+\` \"$MAIN_JS\"
+    else
+       echo "WARNING: Could not find main.js at $MAIN_JS"
+    fi
+  fi
+
 else
   # On Windows, the installation might put everything directly in TEXDIR
   # Check for tlmgr.bat in root
@@ -205,6 +282,21 @@ else
     "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
     "$TARGET_DIR/tlmgr.bat" install texliveonfly collection-fontsrecommended latexmk
     echo ">>> TeX Live setup complete."
+    
+    # Zip logic for fallback case too
+    rm -rf "$TARGET_DIR/tlpkg/tlperl"
+    
+    PARENT_DIR=$(dirname "$TARGET_DIR")
+    BASENAME=$(basename "$TARGET_DIR")
+    cd "$PARENT_DIR"
+    
+    if command -v 7z &> /dev/null; then
+       7z a -tzip "${BASENAME}.zip" "$BASENAME"
+    elif command -v tar &> /dev/null; then
+       tar -cf "${BASENAME}.zip" --format=zip "$BASENAME"
+    fi
+    rm -rf "$BASENAME"
+    
   else
     echo "ERROR: Could not find binary directory"
     echo ">>> Listing TARGET_DIR structure for debugging:"
