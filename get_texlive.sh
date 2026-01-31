@@ -236,37 +236,71 @@ const fs = require('fs');
 const file = process.argv[1];
 try {
   let content = fs.readFileSync(file, 'utf8');
-  // Use regex to find insertion point: inside the loop, before 'const parent'
-  // Regex matches: any whitespace, then 'const parent = path.dirname'
-  const anchorRegex = /(\s*)(const parent = path\.dirname\(searchDir\);)/;
   
-  const injection = \`
-      // [Windows Optimization] Check for texlive.zip
-      if (process.platform === 'win32' && require('fs').existsSync(require('path').join(searchDir, 'texlive.zip'))) {
-          if (!require('fs').existsSync(require('path').join(searchDir, 'texlive'))) {
-              try {
-                  console.log('[latex-workshop] Unzipping bundled TeX Live...');
-                  require('child_process').execSync('tar -xf "texlive.zip"', { cwd: searchDir });
-                  foundDir = require('path').join(searchDir, 'texlive');
-                  if (foundDir) break; 
-              } catch (e) { console.error('[latex-workshop] Unzip failed:', e); }
-          }
+  const setupBlock = \`// [BUNDLED TEX LIVE SETUP]
+(function() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const cp = require('child_process');
+    let searchDir = __dirname;
+    let foundDir = null;
+    
+    // Search upwards for texlive or texlive.zip
+    for (let i = 0; i < 10; i++) {
+      // 1. Check for texlive.zip (Windows Optimization)
+      if (process.platform === 'win32') {
+         const zipPath = path.join(searchDir, 'texlive.zip');
+         if (fs.existsSync(zipPath)) {
+            // Unzip if target dir doesn't exist
+            if (!fs.existsSync(path.join(searchDir, 'texlive'))) {
+                try {
+                    // console.log('[latex-workshop] Unzipping bundled TeX Live...');
+                    cp.execSync('tar -xf "texlive.zip"', { cwd: searchDir });
+                } catch (e) {
+                    // console.error('[latex-workshop] Unzip failed:', e);
+                }
+            }
+         }
       }
+
+      // 2. Check for texlive directory
+      if (fs.existsSync(path.join(searchDir, 'texlive'))) {
+        foundDir = path.join(searchDir, 'texlive');
+        break;
+      }
+
+      const parent = path.dirname(searchDir);
+      if (parent === searchDir) break;
+      searchDir = parent;
+    }
+    
+    // Add to PATH
+    if (foundDir) {
+       const binDir = path.join(foundDir, 'bin');
+       if (fs.existsSync(binDir)) {
+         const subs = fs.readdirSync(binDir).filter(f => fs.statSync(path.join(binDir, f)).isDirectory());
+         if (subs.length > 0) {
+           const texBinPath = path.join(binDir, subs[0]);
+           process.env.PATH = texBinPath + path.delimiter + process.env.PATH;
+         }
+       }
+    }
+  } catch (e) { }
+})();
+// [END BUNDLED TEX LIVE SETUP]
+
 \`;
 
-  if (anchorRegex.test(content)) {
-      content = content.replace(anchorRegex, (match, indent, rest) => {
-          return indent + injection + indent + rest;
-      });
+  // Prepend to content
+  if (!content.includes('// [BUNDLED TEX LIVE SETUP]')) {
+      content = setupBlock + content;
       fs.writeFileSync(file, content);
       console.log('Successfully patched main.js');
   } else {
-      console.error('ERROR: Could not find anchor in main.js');
-      console.error('>>> DUMPING main.js HEAD (50 lines) <<<');
-      console.error(content.split('\\n').slice(0, 50).join('\\n'));
-      console.error('>>> END DUMP <<<');
-      process.exit(1);
+      console.log('main.js already patched');
   }
+
 } catch (e) {
   console.error('ERROR patching main.js:', e);
   process.exit(1);
