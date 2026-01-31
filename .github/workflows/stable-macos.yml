@@ -93,7 +93,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ulimit -n 4096
+          sudo launchctl limit maxfiles 65536 200000
+          ulimit -n 65536
           ./build.sh
 
         if: env.SHOULD_BUILD == 'yes'
