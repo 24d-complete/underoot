@@ -1,7 +1,11 @@
-# Investigation of Workflow Failures (Commit b29d465)
+# Investigation of Workflow Failures
 
 ## Summary
-The GitHub Actions workflows for Linux, macOS, and Windows fail during the `compile-extensions-build` step. The failure is caused by **broken symbolic links** within the bundled TeX Live directory. These broken links cause the VS Code extension build process to crash with an `ENOENT` (File not found) error when it attempts to read file stats.
+The GitHub Actions workflows for Linux, macOS, and Windows have failed due to multiple issues in the TeX Live bundling process:
+
+1. **Broken Symlinks** (Original Issue): The TeX Live installer creates `man` and `info` symlinks pointing to non-existent documentation folders.
+2. **Mirror Timeout** (Linux): The CTAN mirror redirector times out during download.
+3. **Missing Perl Module** (Windows): The system Perl on Windows lacks `Pod::Usage`, which is required by the installer.
 
 ## Detailed Error Analysis
 The build logs for all platforms show the same specific error during the `compile-extensions-build` Gulp task:

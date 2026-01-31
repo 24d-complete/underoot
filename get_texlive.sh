@@ -12,18 +12,22 @@ if [[ -z "$TARGET_DIR" || -z "$OS_NAME" ]]; then
   exit 1
 fi
 
-# Detect installer URL
+# Use a reliable CTAN mirror with fallback
+# The main CTAN redirector sometimes times out; use a direct mirror as primary
+CTAN_MIRRORS=(
+  "https://ftp.tu-chemnitz.de/pub/tug/historic/systems/texlive/2024/tlnet-final"
+  "https://ftp.fau.de/ctan/systems/texlive/tlnet"
+  "https://mirror.ctan.org/systems/texlive/tlnet"
+)
+
+# Detect installer filename
 case "$OS_NAME" in
   osx|linux)
-    INSTALLER_URL="https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
+    INSTALLER_FILE="install-tl-unx.tar.gz"
     ;;
   windows)
-    # For now, we use the unix tarball for Windows if running under bash (e.g. Git Bash)
-    # But Windows native install usually needs install-tl-windows.zip
-    # Let's try to stick to unix installer if we are in bash? No, binaries differ.
-    # We will assume we are in a unix-like environment (macOS/Linux) for this task first as requested.
-    # If generic windows support is needed, we'd need to handle the zip.
-    INSTALLER_URL="https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz" 
+    # Windows needs the zip package with Windows Perl bundled
+    INSTALLER_FILE="install-tl.zip"
     ;;
   *)
     echo "Unsupported OS: $OS_NAME"
@@ -31,12 +35,44 @@ case "$OS_NAME" in
     ;;
 esac
 
-echo ">>> Downloading TeX Live installer..."
+echo ">>> Downloading TeX Live installer for $OS_NAME..."
 mkdir -p texlive_installer
-curl -L -o texlive_installer/install-tl.tar.gz "$INSTALLER_URL"
-
 cd texlive_installer
-tar -xzf install-tl.tar.gz --strip-components=1
+
+# Try each mirror until one succeeds
+DOWNLOAD_SUCCESS=false
+for MIRROR in "${CTAN_MIRRORS[@]}"; do
+  INSTALLER_URL="${MIRROR}/${INSTALLER_FILE}"
+  echo ">>> Trying mirror: $INSTALLER_URL"
+  if curl -fsSL --connect-timeout 30 --max-time 300 -o "$INSTALLER_FILE" "$INSTALLER_URL"; then
+    echo ">>> Download successful from $MIRROR"
+    DOWNLOAD_SUCCESS=true
+    break
+  else
+    echo ">>> Mirror $MIRROR failed, trying next..."
+  fi
+done
+
+if [[ "$DOWNLOAD_SUCCESS" != "true" ]]; then
+  echo "ERROR: Failed to download TeX Live installer from any mirror"
+  exit 1
+fi
+
+# Extract the installer
+if [[ "$OS_NAME" == "windows" ]]; then
+  # Windows: use unzip
+  unzip -q "$INSTALLER_FILE"
+  # Find the extracted directory (install-tl-YYYYMMDD)
+  INSTALL_DIR=$(find . -maxdepth 1 -type d -name "install-tl-*" | head -n 1)
+  if [[ -z "$INSTALL_DIR" ]]; then
+    echo "ERROR: Could not find extracted install-tl directory"
+    exit 1
+  fi
+  cd "$INSTALL_DIR"
+else
+  # Unix: use tar
+  tar -xzf "$INSTALLER_FILE" --strip-components=1
+fi
 
 # Create profile for automated install
 # We select scheme-basic to keep it small
@@ -61,7 +97,21 @@ tlpdbopt_install_srcfiles 0
 EOF
 
 echo ">>> Running installer..."
-./install-tl -profile texlive.profile
+if [[ "$OS_NAME" == "windows" ]]; then
+  # Windows: The zip includes its own Perl, so we use install-tl-windows.bat
+  # But we are in Git Bash, so we can call the Perl script directly with the bundled Perl
+  # The bundled Perl is in tlpkg/tlperl/bin/perl.exe
+  if [[ -f "tlpkg/tlperl/bin/perl.exe" ]]; then
+    echo ">>> Using bundled Perl for Windows..."
+    ./tlpkg/tlperl/bin/perl.exe ./install-tl -profile texlive.profile
+  else
+    # Fallback: try install-tl-windows.bat (runs in cmd)
+    echo ">>> Falling back to install-tl-windows.bat..."
+    cmd //c "install-tl-windows.bat -profile texlive.profile"
+  fi
+else
+  ./install-tl -profile texlive.profile
+fi
 
 cd ..
 rm -rf texlive_installer
@@ -71,8 +121,8 @@ echo ">>> TeX Live installed to $TARGET_DIR"
 # [FIX] Remove broken symlinks causing build failures
 # The installer creates man/info symlinks in bin/ pointing to non-existent doc folders
 echo ">>> Cleaning up broken symlinks (man, info)..."
-find "$TARGET_DIR/bin" -type l -name "man" -delete
-find "$TARGET_DIR/bin" -type l -name "info" -delete
+find "$TARGET_DIR/bin" -type l -name "man" -delete 2>/dev/null || true
+find "$TARGET_DIR/bin" -type l -name "info" -delete 2>/dev/null || true
 
 # Find tlmgr to install updates and packages
 # The binary path depends on the platform
