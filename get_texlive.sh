@@ -236,32 +236,35 @@ const fs = require('fs');
 const file = process.argv[1];
 try {
   let content = fs.readFileSync(file, 'utf8');
+  // Use regex to find insertion point: inside the loop, before 'const parent'
+  // Regex matches: any whitespace, then 'const parent = path.dirname'
+  const anchorRegex = /(\s*)(const parent = path\.dirname\(searchDir\);)/;
+  
   const injection = \`
       // [Windows Optimization] Check for texlive.zip
       if (process.platform === 'win32' && require('fs').existsSync(require('path').join(searchDir, 'texlive.zip'))) {
-          // If zip exists but directory doesn't, unzip it
           if (!require('fs').existsSync(require('path').join(searchDir, 'texlive'))) {
               try {
                   console.log('[latex-workshop] Unzipping bundled TeX Live...');
-                  const zipPath = require('path').join(searchDir, 'texlive.zip');
-                  require('child_process').execSync('tar -xf \"texlive.zip\"', { cwd: searchDir });
+                  require('child_process').execSync('tar -xf "texlive.zip"', { cwd: searchDir });
                   foundDir = require('path').join(searchDir, 'texlive');
-                  if (foundDir) break;
-              } catch (e) {
-                  console.error('[latex-workshop] Failed to unzip texlive:', e);
-              }
+                  if (foundDir) break; 
+              } catch (e) { console.error('[latex-workshop] Unzip failed:', e); }
           }
       }
-  \`;
-  
-  // Inject before directory traversal
-  const anchor = 'const parent = path.dirname(searchDir);';
-  if (content.includes(anchor)) {
-      content = content.replace(anchor, injection + '\\n      ' + anchor);
+\`;
+
+  if (anchorRegex.test(content)) {
+      content = content.replace(anchorRegex, (match, indent, rest) => {
+          return indent + injection + indent + rest;
+      });
       fs.writeFileSync(file, content);
       console.log('Successfully patched main.js');
   } else {
       console.error('ERROR: Could not find anchor in main.js');
+      console.error('>>> DUMPING main.js HEAD (50 lines) <<<');
+      console.error(content.split('\\n').slice(0, 50).join('\\n'));
+      console.error('>>> END DUMP <<<');
       process.exit(1);
   }
 } catch (e) {
