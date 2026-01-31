@@ -92,7 +92,10 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./build.sh
+        run: |
+          ulimit -n 4096
+          ./build.sh
+
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Prepare assets

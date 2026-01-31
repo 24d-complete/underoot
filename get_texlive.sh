@@ -78,12 +78,12 @@ else
 fi
 
 # Create profile for automated install
-# We use scheme-infraonly for MINIMAL install - just the infrastructure
-# This avoids EMFILE errors from too many files (e.g., babel language packs)
-# texliveonfly will download packages on demand at runtime
+# Use scheme-basic to get pdflatex (needed for texliveonfly)
+# We enable portable mode
+# CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
 echo ">>> Creating install profile with TEXDIR=$PROFILE_TARGET_DIR..."
 cat <<EOF > texlive.profile
-selected_scheme scheme-infraonly
+selected_scheme scheme-basic
 TEXDIR $PROFILE_TARGET_DIR
 TEXMFCONFIG $PROFILE_TARGET_DIR/texmf-config
 TEXMFHOME $PROFILE_TARGET_DIR/texmf-home
@@ -165,24 +165,23 @@ fi
 echo ">>> Detected BIN_DIR: $BIN_DIR"
 
 if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
-  echo ">>> Installing minimal extra packages using $BIN_DIR/tlmgr..."
+  echo ">>> Installing extra packages using $BIN_DIR/tlmgr..."
   
   # Point tlmgr to the same frozen repository
   "$BIN_DIR/tlmgr" option repository "$TL_REPOSITORY"
   
-  # Install ONLY the essential packages - texliveonfly will handle the rest at runtime
-  # - texliveonfly: for auto-installing missing packages
-  # - latexmk: commonly used build tool
-  # NO collection-fontsrecommended - it has thousands of files causing EMFILE
-  "$BIN_DIR/tlmgr" install texliveonfly latexmk
+  # Install requested packages
+  # We MUST include collection-fontsrecommended for basic functionality, 
+  # even if it adds many files. We will handle EMFILE limits in the build workflow.
+  "$BIN_DIR/tlmgr" install texliveonfly collection-fontsrecommended latexmk
   
-  echo ">>> TeX Live setup complete (minimal install - packages will be downloaded on demand)."
+  echo ">>> TeX Live setup complete."
 else
   # On Windows, the installation might put everything directly in TEXDIR
   if [[ "$OS_NAME" == "windows" && -f "$TARGET_DIR/tlmgr.bat" ]]; then
     echo ">>> Found tlmgr.bat directly in TEXDIR, using that..."
     "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
-    "$TARGET_DIR/tlmgr.bat" install texliveonfly latexmk
+    "$TARGET_DIR/tlmgr.bat" install texliveonfly collection-fontsrecommended latexmk
     echo ">>> TeX Live setup complete."
   else
     echo "ERROR: Could not find binary directory"
