@@ -12,13 +12,9 @@ if [[ -z "$TARGET_DIR" || -z "$OS_NAME" ]]; then
   exit 1
 fi
 
-# Use a reliable CTAN mirror with fallback
-# The main CTAN redirector sometimes times out; use a direct mirror as primary
-CTAN_MIRRORS=(
-  "https://ftp.tu-chemnitz.de/pub/tug/historic/systems/texlive/2024/tlnet-final"
-  "https://ftp.fau.de/ctan/systems/texlive/tlnet"
-  "https://mirror.ctan.org/systems/texlive/tlnet"
-)
+# Use TeX Live 2024 final release - a frozen, stable version
+# This avoids version mismatches between installer and repository
+TL_REPOSITORY="https://ftp.tu-chemnitz.de/pub/tug/historic/systems/texlive/2024/tlnet-final"
 
 # Detect installer filename
 case "$OS_NAME" in
@@ -35,28 +31,18 @@ case "$OS_NAME" in
     ;;
 esac
 
-echo ">>> Downloading TeX Live installer for $OS_NAME..."
+INSTALLER_URL="${TL_REPOSITORY}/${INSTALLER_FILE}"
+
+echo ">>> Downloading TeX Live installer for $OS_NAME from $INSTALLER_URL..."
 mkdir -p texlive_installer
 cd texlive_installer
 
-# Try each mirror until one succeeds
-DOWNLOAD_SUCCESS=false
-for MIRROR in "${CTAN_MIRRORS[@]}"; do
-  INSTALLER_URL="${MIRROR}/${INSTALLER_FILE}"
-  echo ">>> Trying mirror: $INSTALLER_URL"
-  if curl -fsSL --connect-timeout 30 --max-time 300 -o "$INSTALLER_FILE" "$INSTALLER_URL"; then
-    echo ">>> Download successful from $MIRROR"
-    DOWNLOAD_SUCCESS=true
-    break
-  else
-    echo ">>> Mirror $MIRROR failed, trying next..."
-  fi
-done
-
-if [[ "$DOWNLOAD_SUCCESS" != "true" ]]; then
-  echo "ERROR: Failed to download TeX Live installer from any mirror"
+if ! curl -fsSL --connect-timeout 60 --max-time 600 -o "$INSTALLER_FILE" "$INSTALLER_URL"; then
+  echo "ERROR: Failed to download TeX Live installer"
   exit 1
 fi
+
+echo ">>> Download successful"
 
 # Extract the installer
 if [[ "$OS_NAME" == "windows" ]]; then
@@ -77,6 +63,7 @@ fi
 # Create profile for automated install
 # We select scheme-basic to keep it small
 # We enable portable mode
+# CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
 echo ">>> Creating install profile..."
 cat <<EOF > texlive.profile
 selected_scheme scheme-basic
@@ -87,7 +74,7 @@ TEXMFLOCAL $TARGET_DIR/texmf-local
 TEXMFSYSCONFIG $TARGET_DIR/texmf-config
 TEXMFSYSVAR $TARGET_DIR/texmf-var
 instopt_adjustpath 0
-instopt_adjustrepo 1
+instopt_adjustrepo 0
 instopt_letter 0
 instopt_portable 1
 instopt_write18_restricted 1
@@ -103,14 +90,14 @@ if [[ "$OS_NAME" == "windows" ]]; then
   # The bundled Perl is in tlpkg/tlperl/bin/perl.exe
   if [[ -f "tlpkg/tlperl/bin/perl.exe" ]]; then
     echo ">>> Using bundled Perl for Windows..."
-    ./tlpkg/tlperl/bin/perl.exe ./install-tl -profile texlive.profile
+    ./tlpkg/tlperl/bin/perl.exe ./install-tl -profile texlive.profile -repository "$TL_REPOSITORY"
   else
     # Fallback: try install-tl-windows.bat (runs in cmd)
     echo ">>> Falling back to install-tl-windows.bat..."
-    cmd //c "install-tl-windows.bat -profile texlive.profile"
+    cmd //c "install-tl-windows.bat -profile texlive.profile -repository $TL_REPOSITORY"
   fi
 else
-  ./install-tl -profile texlive.profile
+  ./install-tl -profile texlive.profile -repository "$TL_REPOSITORY"
 fi
 
 cd ..
@@ -130,8 +117,9 @@ BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d | head -n 1)
 
 if [[ -n "$BIN_DIR" ]]; then
   echo ">>> Installing extra packages using $BIN_DIR/tlmgr..."
-  # Update tlmgr first
-  # "$BIN_DIR/tlmgr" update --self
+  
+  # Point tlmgr to the same frozen repository
+  "$BIN_DIR/tlmgr" option repository "$TL_REPOSITORY"
   
   # Install requested packages
   "$BIN_DIR/tlmgr" install texliveonfly collection-fontsrecommended latexmk
