@@ -268,7 +268,7 @@ try {
   console.error('ERROR patching main.js:', e);
   process.exit(1);
 }
-\` \"$MAIN_JS\"
+" "$MAIN_JS"
     else
        echo "WARNING: Could not find main.js at $MAIN_JS"
     fi
