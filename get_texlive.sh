@@ -78,8 +78,8 @@ else
 fi
 
 # Create profile for automated install
-# Use scheme-basic to get pdflatex (needed for texliveonfly)
-# We enable portable mode
+# Use scheme-basic to get pdflatex (contained in collection-latex)
+# This includes babel, but excludes larger font collections
 # CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
 echo ">>> Creating install profile with TEXDIR=$PROFILE_TARGET_DIR..."
 cat <<EOF > texlive.profile
@@ -152,6 +152,16 @@ if [[ "$OS_NAME" == "windows" ]]; then
     # Fallback: search for any bin subdirectory
     BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | head -n 1)
   fi
+
+  # [FIX] Remove bundled Perl on Windows to fix EMFILE errors
+  # The bundled Perl (tlpkg/tlperl) contains thousands of files that cause build failures.
+  # We will rely on the system Perl (which is standard in GH runners) to run tlmgr/latexmk.
+  if [[ -d "$TARGET_DIR/tlpkg/tlperl" ]]; then
+    echo ">>> Removing bundled Perl (tlpkg/tlperl) to save file count..."
+    rm -rf "$TARGET_DIR/tlpkg/tlperl"
+    echo ">>> Removed bundled Perl."
+  fi
+  
 else
   # Unix: bin/<arch>/ structure
   # Remove broken symlinks first (they exist even without doc install)
@@ -166,10 +176,6 @@ echo ">>> Detected BIN_DIR: $BIN_DIR"
 
 if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
   
-  # Debug: List what's in BIN_DIR to be sure
-  echo ">>> Contents of BIN_DIR ($BIN_DIR):"
-  ls -la "$BIN_DIR" || echo ">>> Failed to list BIN_DIR"
-
   # Determine proper tlmgr command
   if [[ "$OS_NAME" == "windows" ]]; then
     if [[ -f "$BIN_DIR/tlmgr.bat" ]]; then
