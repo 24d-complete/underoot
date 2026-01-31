@@ -16,6 +16,23 @@ fi
 # This avoids version mismatches between installer and repository
 TL_REPOSITORY="https://ftp.tu-chemnitz.de/pub/tug/historic/systems/texlive/2024/tlnet-final"
 
+# For Windows, we need to convert Git Bash paths to Windows paths
+# The Perl installer doesn't understand /d/a/... style paths
+if [[ "$OS_NAME" == "windows" ]]; then
+  # Convert /d/a/... to D:\a\... using cygpath if available, or manual conversion
+  if command -v cygpath &> /dev/null; then
+    TARGET_DIR_WIN=$(cygpath -w "$TARGET_DIR")
+  else
+    # Manual conversion: /d/path -> D:/path, then replace / with \
+    TARGET_DIR_WIN=$(echo "$TARGET_DIR" | sed 's|^/\([a-zA-Z]\)/|\1:/|' | sed 's|/|\\|g')
+  fi
+  echo ">>> Windows path conversion: $TARGET_DIR -> $TARGET_DIR_WIN"
+  # Use Windows path for the installer profile
+  PROFILE_TARGET_DIR="$TARGET_DIR_WIN"
+else
+  PROFILE_TARGET_DIR="$TARGET_DIR"
+fi
+
 # Detect installer filename
 case "$OS_NAME" in
   osx|linux)
@@ -64,15 +81,15 @@ fi
 # We select scheme-basic to keep it small
 # We enable portable mode
 # CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
-echo ">>> Creating install profile..."
+echo ">>> Creating install profile with TEXDIR=$PROFILE_TARGET_DIR..."
 cat <<EOF > texlive.profile
 selected_scheme scheme-basic
-TEXDIR $TARGET_DIR
-TEXMFCONFIG $TARGET_DIR/texmf-config
-TEXMFHOME $TARGET_DIR/texmf-home
-TEXMFLOCAL $TARGET_DIR/texmf-local
-TEXMFSYSCONFIG $TARGET_DIR/texmf-config
-TEXMFSYSVAR $TARGET_DIR/texmf-var
+TEXDIR $PROFILE_TARGET_DIR
+TEXMFCONFIG $PROFILE_TARGET_DIR/texmf-config
+TEXMFHOME $PROFILE_TARGET_DIR/texmf-home
+TEXMFLOCAL $PROFILE_TARGET_DIR/texmf-local
+TEXMFSYSCONFIG $PROFILE_TARGET_DIR/texmf-config
+TEXMFSYSVAR $PROFILE_TARGET_DIR/texmf-var
 instopt_adjustpath 0
 instopt_adjustrepo 0
 instopt_letter 0
@@ -82,6 +99,9 @@ tlpdbopt_autobackup 0
 tlpdbopt_install_docfiles 0
 tlpdbopt_install_srcfiles 0
 EOF
+
+echo ">>> Profile contents:"
+cat texlive.profile
 
 echo ">>> Running installer..."
 if [[ "$OS_NAME" == "windows" ]]; then
@@ -107,11 +127,24 @@ echo ">>> TeX Live installed to $TARGET_DIR"
 
 # Debug: List what's in TARGET_DIR
 echo ">>> Contents of $TARGET_DIR:"
-ls -la "$TARGET_DIR" || true
+ls -la "$TARGET_DIR" || echo ">>> Directory listing failed, trying with Windows path..."
+
+# For Windows, also try listing with Windows-style path exploration
+if [[ "$OS_NAME" == "windows" ]]; then
+  echo ">>> Trying to find where TeX Live was actually installed..."
+  # Check if it exists in the Windows path
+  if [[ -d "$TARGET_DIR" ]]; then
+    echo ">>> Found TARGET_DIR at Unix path: $TARGET_DIR"
+  else
+    echo ">>> TARGET_DIR not found at Unix path, checking Windows path..."
+    # Try to find it - check the parent directory
+    PARENT_DIR=$(dirname "$TARGET_DIR")
+    echo ">>> Contents of parent dir $PARENT_DIR:"
+    ls -la "$PARENT_DIR" || true
+  fi
+fi
 
 # Find the binary directory - platform-specific handling
-# On Windows, binaries may be in bin/windows/ or bin/win32/ or directly accessible
-# On Unix, they are in bin/<arch>/ (e.g., bin/x86_64-linux, bin/universal-darwin)
 if [[ "$OS_NAME" == "windows" ]]; then
   # Windows: binaries are typically in bin/windows/ or bin/win32/
   if [[ -d "$TARGET_DIR/bin/windows" ]]; then
