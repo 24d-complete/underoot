@@ -165,19 +165,35 @@ fi
 echo ">>> Detected BIN_DIR: $BIN_DIR"
 
 if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
-  echo ">>> Installing extra packages using $BIN_DIR/tlmgr..."
+  
+  # Debug: List what's in BIN_DIR to be sure
+  echo ">>> Contents of BIN_DIR ($BIN_DIR):"
+  ls -la "$BIN_DIR" || echo ">>> Failed to list BIN_DIR"
+
+  # Determine proper tlmgr command
+  if [[ "$OS_NAME" == "windows" ]]; then
+    if [[ -f "$BIN_DIR/tlmgr.bat" ]]; then
+      TLMGR_CMD="$BIN_DIR/tlmgr.bat"
+    else
+      TLMGR_CMD="$BIN_DIR/tlmgr"
+    fi
+  else
+    TLMGR_CMD="$BIN_DIR/tlmgr"
+  fi
+  
+  echo ">>> Installing extra packages using $TLMGR_CMD..."
   
   # Point tlmgr to the same frozen repository
-  "$BIN_DIR/tlmgr" option repository "$TL_REPOSITORY"
+  "$TLMGR_CMD" option repository "$TL_REPOSITORY"
   
   # Install requested packages
-  # We MUST include collection-fontsrecommended for basic functionality, 
-  # even if it adds many files. We will handle EMFILE limits in the build workflow.
-  "$BIN_DIR/tlmgr" install texliveonfly collection-fontsrecommended latexmk
+  # We MUST include collection-fontsrecommended for basic functionality
+  "$TLMGR_CMD" install texliveonfly collection-fontsrecommended latexmk
   
   echo ">>> TeX Live setup complete."
 else
   # On Windows, the installation might put everything directly in TEXDIR
+  # Check for tlmgr.bat in root
   if [[ "$OS_NAME" == "windows" && -f "$TARGET_DIR/tlmgr.bat" ]]; then
     echo ">>> Found tlmgr.bat directly in TEXDIR, using that..."
     "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
