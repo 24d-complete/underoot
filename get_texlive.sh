@@ -105,17 +105,38 @@ rm -rf texlive_installer
 
 echo ">>> TeX Live installed to $TARGET_DIR"
 
-# [FIX] Remove broken symlinks causing build failures
-# The installer creates man/info symlinks in bin/ pointing to non-existent doc folders
-echo ">>> Cleaning up broken symlinks (man, info)..."
-find "$TARGET_DIR/bin" -type l -name "man" -delete 2>/dev/null || true
-find "$TARGET_DIR/bin" -type l -name "info" -delete 2>/dev/null || true
+# Debug: List what's in TARGET_DIR
+echo ">>> Contents of $TARGET_DIR:"
+ls -la "$TARGET_DIR" || true
 
-# Find tlmgr to install updates and packages
-# The binary path depends on the platform
-BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+# Find the binary directory - platform-specific handling
+# On Windows, binaries may be in bin/windows/ or bin/win32/ or directly accessible
+# On Unix, they are in bin/<arch>/ (e.g., bin/x86_64-linux, bin/universal-darwin)
+if [[ "$OS_NAME" == "windows" ]]; then
+  # Windows: binaries are typically in bin/windows/ or bin/win32/
+  if [[ -d "$TARGET_DIR/bin/windows" ]]; then
+    BIN_DIR="$TARGET_DIR/bin/windows"
+  elif [[ -d "$TARGET_DIR/bin/win32" ]]; then
+    BIN_DIR="$TARGET_DIR/bin/win32"
+  elif [[ -d "$TARGET_DIR/bin/x86_64-pc-mingw32" ]]; then
+    BIN_DIR="$TARGET_DIR/bin/x86_64-pc-mingw32"
+  else
+    # Fallback: search for any bin subdirectory
+    BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | head -n 1)
+  fi
+else
+  # Unix: bin/<arch>/ structure
+  # Remove broken symlinks first (they exist even without doc install)
+  echo ">>> Cleaning up broken symlinks (man, info)..."
+  find "$TARGET_DIR/bin" -type l -name "man" -delete 2>/dev/null || true
+  find "$TARGET_DIR/bin" -type l -name "info" -delete 2>/dev/null || true
+  
+  BIN_DIR=$(find "$TARGET_DIR/bin" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+fi
 
-if [[ -n "$BIN_DIR" ]]; then
+echo ">>> Detected BIN_DIR: $BIN_DIR"
+
+if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
   echo ">>> Installing extra packages using $BIN_DIR/tlmgr..."
   
   # Point tlmgr to the same frozen repository
@@ -126,6 +147,17 @@ if [[ -n "$BIN_DIR" ]]; then
   
   echo ">>> TeX Live setup complete."
 else
-  echo "ERROR: Could not find binary directory in $TARGET_DIR/bin"
-  exit 1
+  # On Windows, the installation might put everything directly in TEXDIR
+  # Let's check if tlmgr exists directly
+  if [[ "$OS_NAME" == "windows" && -f "$TARGET_DIR/tlmgr.bat" ]]; then
+    echo ">>> Found tlmgr.bat directly in TEXDIR, using that..."
+    "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
+    "$TARGET_DIR/tlmgr.bat" install texliveonfly collection-fontsrecommended latexmk
+    echo ">>> TeX Live setup complete."
+  else
+    echo "ERROR: Could not find binary directory"
+    echo ">>> Listing TARGET_DIR structure for debugging:"
+    find "$TARGET_DIR" -maxdepth 3 -type d 2>/dev/null || true
+    exit 1
+  fi
 fi
