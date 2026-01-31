@@ -78,12 +78,12 @@ else
 fi
 
 # Create profile for automated install
-# We select scheme-basic to keep it small
-# We enable portable mode
-# CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
+# We use scheme-infraonly for MINIMAL install - just the infrastructure
+# This avoids EMFILE errors from too many files (e.g., babel language packs)
+# texliveonfly will download packages on demand at runtime
 echo ">>> Creating install profile with TEXDIR=$PROFILE_TARGET_DIR..."
 cat <<EOF > texlive.profile
-selected_scheme scheme-basic
+selected_scheme scheme-infraonly
 TEXDIR $PROFILE_TARGET_DIR
 TEXMFCONFIG $PROFILE_TARGET_DIR/texmf-config
 TEXMFHOME $PROFILE_TARGET_DIR/texmf-home
@@ -127,17 +127,12 @@ echo ">>> TeX Live installed to $TARGET_DIR"
 
 # Debug: List what's in TARGET_DIR
 echo ">>> Contents of $TARGET_DIR:"
-ls -la "$TARGET_DIR" || echo ">>> Directory listing failed, trying with Windows path..."
+ls -la "$TARGET_DIR" || echo ">>> Directory listing failed"
 
 # For Windows, also try listing with Windows-style path exploration
 if [[ "$OS_NAME" == "windows" ]]; then
-  echo ">>> Trying to find where TeX Live was actually installed..."
-  # Check if it exists in the Windows path
-  if [[ -d "$TARGET_DIR" ]]; then
-    echo ">>> Found TARGET_DIR at Unix path: $TARGET_DIR"
-  else
-    echo ">>> TARGET_DIR not found at Unix path, checking Windows path..."
-    # Try to find it - check the parent directory
+  if [[ ! -d "$TARGET_DIR" ]]; then
+    echo ">>> TARGET_DIR not found at Unix path, checking parent..."
     PARENT_DIR=$(dirname "$TARGET_DIR")
     echo ">>> Contents of parent dir $PARENT_DIR:"
     ls -la "$PARENT_DIR" || true
@@ -170,22 +165,24 @@ fi
 echo ">>> Detected BIN_DIR: $BIN_DIR"
 
 if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
-  echo ">>> Installing extra packages using $BIN_DIR/tlmgr..."
+  echo ">>> Installing minimal extra packages using $BIN_DIR/tlmgr..."
   
   # Point tlmgr to the same frozen repository
   "$BIN_DIR/tlmgr" option repository "$TL_REPOSITORY"
   
-  # Install requested packages
-  "$BIN_DIR/tlmgr" install texliveonfly collection-fontsrecommended latexmk
+  # Install ONLY the essential packages - texliveonfly will handle the rest at runtime
+  # - texliveonfly: for auto-installing missing packages
+  # - latexmk: commonly used build tool
+  # NO collection-fontsrecommended - it has thousands of files causing EMFILE
+  "$BIN_DIR/tlmgr" install texliveonfly latexmk
   
-  echo ">>> TeX Live setup complete."
+  echo ">>> TeX Live setup complete (minimal install - packages will be downloaded on demand)."
 else
   # On Windows, the installation might put everything directly in TEXDIR
-  # Let's check if tlmgr exists directly
   if [[ "$OS_NAME" == "windows" && -f "$TARGET_DIR/tlmgr.bat" ]]; then
     echo ">>> Found tlmgr.bat directly in TEXDIR, using that..."
     "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
-    "$TARGET_DIR/tlmgr.bat" install texliveonfly collection-fontsrecommended latexmk
+    "$TARGET_DIR/tlmgr.bat" install texliveonfly latexmk
     echo ">>> TeX Live setup complete."
   else
     echo "ERROR: Could not find binary directory"
