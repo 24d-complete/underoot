@@ -78,8 +78,8 @@ else
 fi
 
 # Create profile for automated install
-# Use scheme-basic to get pdflatex (contained in collection-latex)
-# This includes babel, but excludes larger font collections
+# Use scheme-basic to get pdflatex (needed for texliveonfly)
+# We enable portable mode
 # CRITICAL: instopt_adjustrepo 0 - do NOT update repository, stay on 2024 final
 echo ">>> Creating install profile with TEXDIR=$PROFILE_TARGET_DIR..."
 cat <<EOF > texlive.profile
@@ -187,9 +187,8 @@ if [[ -n "$BIN_DIR" && -d "$BIN_DIR" ]]; then
   "$TLMGR_CMD" option repository "$TL_REPOSITORY"
   
   # Install requested packages
-  # REMOVED collection-fontsrecommended to save file count/space
-  # scheme-basic includes pdflatex (collection-latex), so we just need utility tools
-  "$TLMGR_CMD" install texliveonfly latexmk
+  # We MUST include collection-fontsrecommended for basic functionality
+  "$TLMGR_CMD" install texliveonfly collection-fontsrecommended latexmk
   
   echo ">>> TeX Live setup complete."
 else
@@ -198,8 +197,7 @@ else
   if [[ "$OS_NAME" == "windows" && -f "$TARGET_DIR/tlmgr.bat" ]]; then
     echo ">>> Found tlmgr.bat directly in TEXDIR, using that..."
     "$TARGET_DIR/tlmgr.bat" option repository "$TL_REPOSITORY"
-    # REMOVED collection-fontsrecommended
-    "$TARGET_DIR/tlmgr.bat" install texliveonfly latexmk
+    "$TARGET_DIR/tlmgr.bat" install texliveonfly collection-fontsrecommended latexmk
     echo ">>> TeX Live setup complete."
   else
     echo "ERROR: Could not find binary directory"
