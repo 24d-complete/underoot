@@ -1,0 +1,23 @@
+Interface Changes (To-Do)
+Move Outline to the top by default in the "Explorer" window, with the file structure displayed below it.
+Move the timeline from the explorer to the Panel at the bottom (where terminal, problems, etc. are located).
+Remove the PORTS option by default.
+Move the commands and snippet view from the latex-workshop extension in the primary activity bar to the same bottom panel.
+Redesign the Outline to resemble the Latex-Workshop extension's structure view (currently shows icons before text, unlike extensions' useful numbers). The structure view should probably be moved to the explorer panel itself and keep calling it Outline instead of Structure, or implement the same logic as the extension for the outline view. Also ensure this is implemented on tex file tab’s breadcrumb which also shows icons as of now.
+Hide file name extensions by default in the file view in the explorer.
+Hide non user-relevant files (e.g., .bbl, .aux, .fdb_latexmk, .fls, .log, .out, .synctex.gz) from the explorer file view.
+Hide the VSCode breadcrumbs from the PDF viewer tab/windows (keep them for .tex and other files).
+Show a Zen Mode button next to (to the left of the customize layout button) on the top title bar at the top right corner.
+Use webstorm theme extension - rebrand it as Underoot Theme and keep the webstorm light as default light version and webstorm darker as default dark version when user picks the theme…
+From status bar at the bottom right, remove space/tab selector, encoding, and lf-crlf things - only keep line/column, language mode and notification… however, add the pdf page count, texword count at the bottom right before line/column (to the left of line/column)
+Hide the minimap by default
+Show progress bar while rendering the pdf, and downloading/installing the packages etc.
+
+
+Default Quick input position should be set to Center
+Jump to pdf (forward synctex - cmd/ctrl + J) doesn’t seem to exact word - seems like it shows whole Editor line’s point at starting on corresponding last line on pdf. The backward synctex does seem to put cursor on right position on the editor, but the horizontal scrolling to show/focus that word/cursor is not working, only vertical scrolling works.
+
+
+
+
+

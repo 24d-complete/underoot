@@ -19,3 +19,15 @@ stores/snapcraft/insider/*.snap
 stores/snapcraft/stable/*.snap
 
 logs_55500464554/
+
+# Underoot temporary and test files
+sample_diffs_underoot_overleaf/
+texlive_installer/
+*.log
+run_log*.txt
+tlmgr_output.txt
+prepare_output.log
+patches/user/*.backup*
+test.*
+test_bib.*
+references.bib
