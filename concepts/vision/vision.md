@@ -1,0 +1,83 @@
+# Underoot: The Next-Generation Scientific Writing Ecosystem
+
+## 1. Executive Summary
+Underoot is a local-first, open-source scientific writing platform designed to bridge the gap between heavy desktop environments and collaborative web tools. By stripping away the bloat of traditional IDEs (like VS Code) and enhancing the accessibility of LaTeX, Underoot provides a lightweight, AI-integrated environment for researchers, developers, and academic teams.
+
+## 2. System Architecture & Core Experience
+
+### 2.1 Hybrid Local-First Architecture
+- **Browser-Based Desktop Bridge:** Underoot operates via a "write once, run anywhere" browser mode. Unlike traditional web apps, the browser interface connects directly to a local desktop agent (similar to Figma’s architecture).
+- **Function:** The application runs on underoot.com but utilizes the local machine’s file system and resources. localhost is bypassed in favor of a secure local bridge.
+- **Lightweight Editor Core:** Built on a streamlined architecture that strips unnecessary features from standard IDEs (e.g., VS Code), focusing solely on performance and writing tools.
+- **TeXLive on the Fly:** Eliminates complex installation procedures. The necessary TeX packages are fetched and managed automatically in the background.
+
+### 2.2 Universal Compatibility & Conversion
+**Format Agnosticism:** Seamless two-way conversion tools:
+- **Word to Standard/Conference LaTeX:** Convert .docx files directly into clean LaTeX code.
+- **PDF to LaTeX:** Intelligent parsing to reverse-engineer PDFs into editable LaTeX source code.
+- **LaTex to Word**
+- **Overleaf to Underoot:** One-click migration tool to pull projects from cloud silos to the local environment.
+
+**Smart Visualization (Dark Mode 2.0):** Advanced rendering that goes beyond text color. The engine intelligently inverts diagrams, PNGs, and embedded PDFs to match dark mode themes without losing clarity (e.g., removing white backgrounds from plots).
+
+## 3. User Personas & Feature Sets
+
+### 3.1 The Power Researcher (Core User)
+
+**The "Reviewer 2" Simulator (AI Agent):**
+- **Concept:** An adversarial AI agent designed to critique papers pre-submission.
+- **Functionality:** Users select a persona (e.g., "Pedantic IEEE Reviewer," "Grumpy Thesis Committee Member"). The local LLM scans the text for logical fallacies, undefined acronyms, weak argumentation, and missing citations.
+
+**Semantic Reference Graphing:**
+- **Concept:** Moving beyond flat bibliographies.
+- **Functionality:** A visual node-graph (similar to Obsidian/ResearchRabbit) that maps citation relationships. It proactively highlights relevant papers the user has missed based on the semantic context of the draft.
+
+**Adaptive Document Export ("Thesis Splitter"):**
+- **Concept:** Single-source publishing.
+- **Functionality:** Users maintain one master file (e.g., a Thesis). The engine can "emit" specific chapters as standalone conference papers (e.g., "Export Chapter 4 as IEEE Conference Paper"), automatically stripping thesis formatting while preserving citation integrity.
+
+**Reproducible "Smart Figures":**
+- **Concept:** Code-driven graphics.
+- **Functionality:** Instead of pasting static PNGs, users write Python/R code blocks directly in the editor. Figures are generated at compile time; updating the underlying CSV automatically updates the graph in the final PDF.
+
+### 3.2 The Developer & Hacker
+
+**Typst Mode (The Speed Layer):**
+- **Concept:** Modern syntax for rapid drafting.
+- **Functionality:** Users draft in Typst (a Rust-based, high-speed LaTeX alternative) for velocity. Underoot handles the "Transpilation" to standard LaTeX for final submission, satisfying conference requirements while improving the drafting experience.
+
+**Native Keybinding Integration ("God Mode"):**
+- **Concept:** True environment emulation.
+- **Functionality:** Rather than emulating Vim/Emacs, Underoot bridges to the user's local configuration. It utilizes existing .vimrc or Neovim configs via the local bridge.
+
+**Visual Version Control:**
+- **Concept:** Git made accessible.
+- **Functionality:** A "Time Travel" UI slider allows users to scroll through the document's history. Features a visual "Blame" view to identify authorship of specific paragraphs without using the command line.
+
+### 3.3 The Collaborative Lab (Ed-Tech)
+- **P2P Collaboration:** A decentralized, peer-to-peer real-time editing engine. Data is not stored on a central server, ensuring privacy and ownership.
+- **Async Rich-Media Huddles:**
+    - **Functionality:** Users can select text and leave 30-second video or audio annotations (e.g., "This equation needs correcting because... [screen drawing]"). These assets are stored within the project's P2P folder structure.
+- **"Lab Bench" Variables:**
+    - **Functionality:** A shared global configuration file for research teams.
+    - **Use Case:** If a dataset size changes ($n=500 \rightarrow n=600$), updating the central variable automatically reflects the change across all connected papers and thesis drafts within the lab.
+- **PDF & Editor Collaboration:** Add functionality to highlight and comment on pdf and editor both like overleaf does.
+
+## 4. Services & Revenue Model
+
+**Philosophy:** Underoot is open-source and local-first. Monetization focuses on "Convenience" and "Compute," avoiding feature gatekeeping.
+
+### 4.1 Underoot Cloud Burst
+- **Problem:** Compiling massive documents (200+ page theses with high-res medical imaging) or running 70B parameter local LLMs is taxing on consumer hardware.
+- **Service:** Offload compilation and AI inference to Underoot’s cloud infrastructure for a micropayment (e.g., $0.10/task).
+
+### 4.2 Verified Template Marketplace
+- **Problem:** Public repositories (like Overleaf gallery) are often plagued by broken or deprecated templates.
+- **Service:** A curated store where universities and conferences release "Verified" templates (e.g., "Official IIT Bombay Thesis Template – Verified 2026").
+
+### 4.3 Underoot.pub (Pre-Print Hosting)
+- **Problem:** PDFs are not mobile-friendly.
+- **Service:** One-click publishing to a responsive HTML5 web view. This transforms static papers into interactive web pages with zoomable graphs and mobile readability, ideal for sharing on social media (LinkedIn/X) prior to official publication.
+
+### 4.4 Human-in-the-Loop Marketplace
+- **Service:** Integrated access to professional proofreading and editing services for final polish.
