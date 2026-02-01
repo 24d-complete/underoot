@@ -77,7 +77,7 @@ diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/sr
 index 7fbfacc..7248cef 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-@@ -1003,6 +1003,21 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+@@ -1003,4 +1003,19 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
  	}
  
  	private renderStat(stat: ExplorerItem, label: string | string[], domId: string | undefined, filterData: FuzzyScore | undefined, templateData: IFileTemplateData): void {
