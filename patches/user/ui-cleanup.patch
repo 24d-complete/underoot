@@ -1,9 +1,9 @@
 diff --git a/product.json b/product.json
-index 736b321..e706861 100644
+index 736b321..9a6188f 100644
 --- a/product.json
 +++ b/product.json
-@@ -1,9 +1,8 @@
--{
+@@ -1,9 +1,9 @@
+ {
 -	"nameShort": "Code - OSS",
 -	"nameLong": "Code - OSS",
 -	"applicationName": "code-oss",
@@ -17,7 +17,7 @@ index 736b321..e706861 100644
  	"licenseName": "MIT",
  	"licenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
  	"serverLicenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
-@@ -13,18 +12,18 @@
+@@ -13,18 +13,18 @@
  	"serverApplicationName": "code-server-oss",
  	"serverDataFolderName": ".vscode-server-oss",
  	"tunnelApplicationName": "code-tunnel-oss",
@@ -42,7 +42,7 @@ index 736b321..e706861 100644
  	"darwinProfileUUID": "47827DD9-4734-49A0-AF80-7E19B11495CC",
  	"darwinProfilePayloadUUID": "CF808BE7-53F3-46C6-A7E2-7EDB98A5E959",
  	"linuxIconName": "code-oss",
-@@ -151,4 +150,4 @@
+@@ -151,4 +151,4 @@
  			"GitHub.copilot-chat"
  		]
  	}
