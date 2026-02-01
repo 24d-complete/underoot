@@ -30,10 +30,10 @@ index 9e9423f..28a222d 100644
 +	order: -100
 +});
 diff --git a/src/vs/workbench/browser/parts/editor/editorStatus.ts b/src/vs/workbench/browser/parts/editor/editorStatus.ts
-index 7bcbfe6..24a2476 100644
+index 7bcbfe6..31b6d6a 100644
 --- a/src/vs/workbench/browser/parts/editor/editorStatus.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorStatus.ts
-@@ -520,7 +520,8 @@ class EditorStatus extends Disposable {
+@@ -518,60 +518,63 @@ class EditorStatus extends Disposable {
  	}
  
  	private updateIndentationElement(text: string | undefined): void {
@@ -41,13 +41,23 @@ index 7bcbfe6..24a2476 100644
 -			this.indentationElement.clear();
 -			return;
 -		}
--
++		// Underoot: Hide status bar item
++		// if (!text) {
++		// 	this.indentationElement.clear();
++		// 	return;
++		// }
+ 
 -		const editorURI = getCodeEditor(this.editorService.activeTextEditorControl)?.getModel()?.uri;
 -		if (editorURI?.scheme === Schemas.vscodeNotebookCell) {
 -			this.indentationElement.clear();
 -			return;
 -		}
--
++		// const editorURI = getCodeEditor(this.editorService.activeTextEditorControl)?.getModel()?.uri;
++		// if (editorURI?.scheme === Schemas.vscodeNotebookCell) {
++		// 	this.indentationElement.clear();
++		// 	return;
++		// }
+ 
 -		const props: IStatusbarEntry = {
 -			name: localize('status.editor.indentation', "Editor Indentation"),
 -			text,
@@ -55,20 +65,6 @@ index 7bcbfe6..24a2476 100644
 -			tooltip: localize('selectIndentation', "Select Indentation"),
 -			command: `changeEditorIndentation${this.targetWindowId}`
 -		};
--
--		this.updateElement(this.indentationElement, props, 'status.editor.indentation', StatusbarAlignment.RIGHT, 100.4);
-+		// Underoot: Hide status bar item
-+		// if (!text) {
-+		// 	this.indentationElement.clear();
-+		// 	return;
-+		// }
-+
-+		// const editorURI = getCodeEditor(this.editorService.activeTextEditorControl)?.getModel()?.uri;
-+		// if (editorURI?.scheme === Schemas.vscodeNotebookCell) {
-+		// 	this.indentationElement.clear();
-+		// 	return;
-+		// }
-+
 +		// const props: IStatusbarEntry = {
 +		// 	name: localize('status.editor.indentation', "Editor Indentation"),
 +		// 	text,
@@ -76,7 +72,8 @@ index 7bcbfe6..24a2476 100644
 +		// 	tooltip: localize('selectIndentation', "Select Indentation"),
 +		// 	command: `changeEditorIndentation${this.targetWindowId}`
 +		// };
-+
+ 
+-		this.updateElement(this.indentationElement, props, 'status.editor.indentation', StatusbarAlignment.RIGHT, 100.4);
 +		// this.updateElement(this.indentationElement, props, 'status.editor.indentation', StatusbarAlignment.RIGHT, 100.4);
  	}
  
@@ -85,7 +82,12 @@ index 7bcbfe6..24a2476 100644
 -			this.encodingElement.clear();
 -			return;
 -		}
--
++		// Underoot: Hide status bar item
++		// if (!text) {
++		// 	this.encodingElement.clear();
++		// 	return;
++		// }
+ 
 -		const props: IStatusbarEntry = {
 -			name: localize('status.editor.encoding', "Editor Encoding"),
 -			text,
@@ -93,14 +95,6 @@ index 7bcbfe6..24a2476 100644
 -			tooltip: localize('selectEncoding', "Select Encoding"),
 -			command: 'workbench.action.editor.changeEncoding'
 -		};
--
--		this.updateElement(this.encodingElement, props, 'status.editor.encoding', StatusbarAlignment.RIGHT, 100.3);
-+		// Underoot: Hide status bar item
-+		// if (!text) {
-+		// 	this.encodingElement.clear();
-+		// 	return;
-+		// }
-+
 +		// const props: IStatusbarEntry = {
 +		// 	name: localize('status.editor.encoding', "Editor Encoding"),
 +		// 	text,
@@ -108,7 +102,8 @@ index 7bcbfe6..24a2476 100644
 +		// 	tooltip: localize('selectEncoding', "Select Encoding"),
 +		// 	command: 'workbench.action.editor.changeEncoding'
 +		// };
-+
+ 
+-		this.updateElement(this.encodingElement, props, 'status.editor.encoding', StatusbarAlignment.RIGHT, 100.3);
 +		// this.updateElement(this.encodingElement, props, 'status.editor.encoding', StatusbarAlignment.RIGHT, 100.3);
  	}
  
@@ -117,7 +112,12 @@ index 7bcbfe6..24a2476 100644
 -			this.eolElement.clear();
 -			return;
 -		}
--
++		// Underoot: Hide status bar item
++		// if (!text) {
++		// 	this.eolElement.clear();
++		// 	return;
++		// }
+ 
 -		const props: IStatusbarEntry = {
 -			name: localize('status.editor.eol', "Editor End of Line"),
 -			text,
@@ -125,14 +125,6 @@ index 7bcbfe6..24a2476 100644
 -			tooltip: localize('selectEOL', "Select End of Line Sequence"),
 -			command: 'workbench.action.editor.changeEOL'
 -		};
--
--		this.updateElement(this.eolElement, props, 'status.editor.eol', StatusbarAlignment.RIGHT, 100.2);
-+		// Underoot: Hide status bar item
-+		// if (!text) {
-+		// 	this.eolElement.clear();
-+		// 	return;
-+		// }
-+
 +		// const props: IStatusbarEntry = {
 +		// 	name: localize('status.editor.eol', "Editor End of Line"),
 +		// 	text,
@@ -140,12 +132,13 @@ index 7bcbfe6..24a2476 100644
 +		// 	tooltip: localize('selectEOL', "Select End of Line Sequence"),
 +		// 	command: 'workbench.action.editor.changeEOL'
 +		// };
-+
+ 
+-		this.updateElement(this.eolElement, props, 'status.editor.eol', StatusbarAlignment.RIGHT, 100.2);
 +		// this.updateElement(this.eolElement, props, 'status.editor.eol', StatusbarAlignment.RIGHT, 100.2);
  	}
  
  	private updateLanguageIdElement(text: string | undefined): void {
-@@ -642,10 +642,11 @@ class EditorStatus extends Disposable {
+@@ -642,10 +645,11 @@ class EditorStatus extends Disposable {
  		this.updateTabFocusModeElement(!!this.state.tabFocusMode);
  		this.updateInputModeElement(this.state.inputMode);
  		this.updateColumnSelectionModeElement(!!this.state.columnSelectionMode);
@@ -186,14 +179,13 @@ index 87030a8..679501b 100644
  	}
  });
 diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-index 7fbfacc..7248cef 100644
+index 7fbfacc..a59424b 100644
 --- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
 +++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
-@@ -1003,4 +1003,19 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+@@ -1003,6 +1003,21 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
  	}
  
  	private renderStat(stat: ExplorerItem, label: string | string[], domId: string | undefined, filterData: FuzzyScore | undefined, templateData: IFileTemplateData): void {
--		templateData.label.element.style.display = 'flex';
 +		if ((this.config.explorer as any).hideFileExtensions && !stat.isDirectory) {
 +			if (typeof label === 'string') {
 +				const dotIndex = label.lastIndexOf('.');
@@ -209,16 +201,14 @@ index 7fbfacc..7248cef 100644
 +			}
 +		}
 +
-+		templateData.label.element.style.display = 'flex';
+ 		templateData.label.element.style.display = 'flex';
+ 		const extraClasses = ['explorer-item'];
+ 		if (this.explorerService.isCut(stat)) {
 diff --git a/src/vs/workbench/contrib/surveys/browser/nps.contribution.ts b/src/vs/workbench/contrib/surveys/browser/nps.contribution.ts
-index 5c0e330..93808e6 100644
+index 5c0e330..61f90e0 100644
 --- a/src/vs/workbench/contrib/surveys/browser/nps.contribution.ts
 +++ b/src/vs/workbench/contrib/surveys/browser/nps.contribution.ts
-@@ -1,19 +1,19 @@
- /*---------------------------------------------------------------------------------------------
-  *  Copyright (c) Microsoft Corporation. All rights reserved.
-  *  Licensed under the MIT License. See License.txt in the project root for license information.
-  *--------------------------------------------------------------------------------------------*/
+@@ -5,17 +5,16 @@
  
  import * as nls from '../../../../nls.js';
  import { language } from '../../../../base/common/platform.js';
@@ -234,10 +224,13 @@ index 5c0e330..93808e6 100644
  import { Severity, INotificationService, NotificationPriority } from '../../../../platform/notification/common/notification.js';
  import { IOpenerService } from '../../../../platform/opener/common/opener.js';
  import { URI } from '../../../../base/common/uri.js';
- import { INativeHostService } from '../../../../platform/native/common/native.js';
+-import { platform } from '../../../../base/common/process.js';
+-import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
++import { INativeHostService } from '../../../../platform/native/common/native.js';
  
  const PROBABILITY = 0.15;
-@@ -26,7 +26,7 @@ const LAST_SESSION_DATE_KEY = 'nps/lastSessionDate';
+ const SESSION_COUNT_KEY = 'nps/sessionCount';
+@@ -23,17 +22,18 @@ const LAST_SESSION_DATE_KEY = 'nps/lastSessionDate';
  const SKIP_VERSION_KEY = 'nps/skipVersion';
  const IS_CANDIDATE_KEY = 'nps/isCandidate';
  
@@ -246,7 +239,33 @@ index 5c0e330..93808e6 100644
 +class NPSContribution {
  
  	constructor(
- 		@ITelemetryService private readonly telemetryService: ITelemetryService,
+-		@IStorageService storageService: IStorageService,
+-		@INotificationService notificationService: INotificationService,
+-		@ITelemetryService telemetryService: ITelemetryService,
+-		@IOpenerService openerService: IOpenerService,
+-		@IProductService productService: IProductService,
+-		@IConfigurationService configurationService: IConfigurationService
++		@ITelemetryService private readonly telemetryService: ITelemetryService,
++		@IStorageService private readonly storageService: IStorageService,
++		@INotificationService private readonly notificationService: INotificationService,
++		@IOpenerService private readonly openerService: IOpenerService,
++		@IProductService private readonly productService: IProductService,
++		@INativeHostService private readonly nativeHostService: INativeHostService
+ 	) {
+-		if (!productService.npsSurveyUrl || !configurationService.getValue<boolean>('telemetry.feedback.enabled')) {
++		if (!productService.npsSurveyUrl) {
+ 			return;
+ 		}
+ 
+@@ -73,7 +73,7 @@ class NPSContribution implements IWorkbenchContribution {
+ 			[{
+ 				label: nls.localize('takeSurvey', "Take Survey"),
+ 				run: () => {
+-					openerService.open(URI.parse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(telemetryService.machineId)}`));
++					openerService.open(URI.parse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(isWindows ? 'Windows' : isMacintosh ? 'Mac' : 'Linux')}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(telemetryService.machineId)}`));
+ 					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.APPLICATION, StorageTarget.USER);
+ 					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.APPLICATION, StorageTarget.USER);
+ 				}
 @@ -93,6 +93,6 @@ class NPSContribution implements IWorkbenchContribution {
  }
  
