@@ -140,3 +140,12 @@ We recently conducted a deep-dive analysis of the **PDF Viewer**.
 *   **Baseline Audit:** Completed the audit of [todo_interface.md](file:///Users/akhilhothi/Documents/underoot/concepts/vision/todo_interface.md), classifying all proposed changes into default setting changes, layout modifications, and extension-based integrations.
 *   **Repository Cleanup:** Sanitized the root directory by excluding build artifacts, logs, and temporary test files in `.gitignore`.
 *   **"Fresh Start" Milestone:** Rebased and consolidated all architectural brainstorming and vision documents into the `feature/underoot-interface-overhaul` branch, establishing a clean baseline for the next phase of implementation.
+
+## 🎨 Phase 3: Defaults-Only Implementation
+*Date: **Feb 5, 2026***
+*   **Settings-Only Overhaul:** Successfully implemented the "defaults-only" changes identified in the audit.
+*   **Minimap Disabled:** Set `editor.minimap.enabled` to `false` by default.
+*   **Quick Input Centered:** Modified the Quick Input (Command Palette) to appear centered vertically in the window by default.
+*   **Explorer Exclusions:** Added LaTeX build artifacts (`.aux`, `.log`, etc.) to the default file exclusions.
+*   **Extension Hiding:** Introduced `explorer.hideFileExtensions` (default: true) and implemented logic to strip extensions in the Explorer view.
+*   **Persistence:** Generated `patches/user/defaults-ready.patch` to ensure these core adjustments are preserved within the Underoot source.
