@@ -132,3 +132,11 @@ We recently conducted a deep-dive analysis of the **PDF Viewer**.
 *   **Editor Polish:** Disabled the minimap by default for a distraction-free writing environment.
 *   **Title Bar:** Added a dedicated "Zen Mode" button to the title bar actions.
 *   **Feedback:** Disabled the NPS survey popup to prevent interruptions.
+
+---
+
+## 🏗️ Phase 2: Structural Baseline & Audit
+*Date: **Feb 5, 2026***
+*   **Baseline Audit:** Completed the audit of [todo_interface.md](file:///Users/akhilhothi/Documents/underoot/concepts/vision/todo_interface.md), classifying all proposed changes into default setting changes, layout modifications, and extension-based integrations.
+*   **Repository Cleanup:** Sanitized the root directory by excluding build artifacts, logs, and temporary test files in `.gitignore`.
+*   **"Fresh Start" Milestone:** Rebased and consolidated all architectural brainstorming and vision documents into the `feature/underoot-interface-overhaul` branch, establishing a clean baseline for the next phase of implementation.
