@@ -1,0 +1,74 @@
+diff --git a/src/vs/editor/common/config/editorOptions.ts b/src/vs/editor/common/config/editorOptions.ts
+index a6e7322..2584b42 100644
+--- a/src/vs/editor/common/config/editorOptions.ts
++++ b/src/vs/editor/common/config/editorOptions.ts
+@@ -3406,7 +3406,7 @@ class EditorMinimap extends BaseEditorOption<EditorOption.minimap, IEditorMinima
+ 
+ 	constructor() {
+ 		const defaults: EditorMinimapOptions = {
+-			enabled: true,
++			enabled: false,
+ 			size: 'proportional',
+ 			side: 'right',
+ 			showSlider: 'mouseover',
+diff --git a/src/vs/platform/quickinput/browser/quickInputController.ts b/src/vs/platform/quickinput/browser/quickInputController.ts
+index a3a85e3..0f96fef 100644
+--- a/src/vs/platform/quickinput/browser/quickInputController.ts
++++ b/src/vs/platform/quickinput/browser/quickInputController.ts
+@@ -859,7 +859,7 @@ export class QuickInputController extends Disposable {
+ 			style.width = width + 'px';
+ 
+ 			// Position
+-			style.top = `${this.viewState?.top ? Math.round(this.dimension!.height * this.viewState.top) : this.titleBarOffset}px`;
++			style.top = `${this.viewState?.top ? Math.round(this.dimension!.height * this.viewState.top) : Math.round(this.dimension!.height / 2 - this.ui.container.clientHeight / 2)}px`;
+ 			style.left = `${Math.round((this.dimension!.width * (this.viewState?.left ?? 0.5 /* center */)) - (width / 2))}px`;
+ 
+ 			this.ui.inputBox.layout();
+diff --git a/src/vs/workbench/contrib/files/browser/files.contribution.ts b/src/vs/workbench/contrib/files/browser/files.contribution.ts
+index 87030a8..6c9a2f5 100644
+--- a/src/vs/workbench/contrib/files/browser/files.contribution.ts
++++ b/src/vs/workbench/contrib/files/browser/files.contribution.ts
+@@ -154,7 +154,7 @@ configurationRegistry.registerConfiguration({
+ 			'type': 'object',
+ 			'markdownDescription': nls.localize('exclude', "Configure [glob patterns](https://aka.ms/vscode-glob-patterns) for excluding files and folders. For example, the File Explorer decides which files and folders to show or hide based on this setting. Refer to the `#search.exclude#` setting to define search-specific excludes. Refer to the `#explorer.excludeGitIgnore#` setting for ignoring files based on your `.gitignore`."),
+ 			'default': {
+-				...{ '**/.git': true, '**/.svn': true, '**/.hg': true, '**/.DS_Store': true, '**/Thumbs.db': true },
++				...{ '**/.git': true, '**/.svn': true, '**/.hg': true, '**/.DS_Store': true, '**/Thumbs.db': true, '**/*.aux': true, '**/*.fdb_latexmk': true, '**/*.fls': true, '**/*.log': true, '**/*.synctex.gz': true, '**/*.bbl': true, '**/*.blg': true, '**/*.out': true },
+ 				...(isWeb ? { '**/*.crswap': true /* filter out swap files used for local file access */ } : undefined)
+ 			},
+ 			'scope': ConfigurationScope.RESOURCE,
+@@ -408,6 +408,11 @@ configurationRegistry.registerConfiguration({
+ 	'title': nls.localize('explorerConfigurationTitle', "File Explorer"),
+ 	'type': 'object',
+ 	'properties': {
++		'explorer.hideFileExtensions': {
++			'type': 'boolean',
++			'description': nls.localize('hideFileExtensions', "Controls whether file extensions are hidden in the Explorer."),
++			'default': true
++		},
+ 		'explorer.openEditors.visible': {
+ 			'type': 'number',
+ 			'description': nls.localize({ key: 'openEditorsVisible', comment: ['Open is an adjective'] }, "The initial maximum number of editors shown in the Open Editors pane. Exceeding this limit will show a scroll bar and allow resizing the pane to display more items."),
+diff --git a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
+index 7fbfacc..1d22d6c 100644
+--- a/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
++++ b/src/vs/workbench/contrib/files/browser/views/explorerViewer.ts
+@@ -1022,7 +1022,17 @@ export class FilesRenderer implements ICompressibleTreeRenderer<ExplorerItem, Fu
+ 		const themeIsUnhappyWithNesting = theme.hasFileIcons && (theme.hidesExplorerArrows || !theme.hasFolderIcons);
+ 		const realignNestedChildren = stat.nestedParent && themeIsUnhappyWithNesting;
+ 		templateData.contribs.forEach(c => c.setResource(stat.resource));
+-		templateData.label.setResource({ resource: stat.resource, name: label }, {
++
++		let displayLabel = label;
++		if (!stat.isDirectory && this.configurationService.getValue('explorer.hideFileExtensions')) {
++			if (typeof displayLabel === 'string') {
++				displayLabel = path.basename(displayLabel, path.extname(displayLabel));
++			} else {
++				displayLabel = displayLabel.map(n => path.basename(n, path.extname(n)));
++			}
++		}
++
++		templateData.label.setResource({ resource: stat.resource, name: displayLabel }, {
+ 			fileKind: stat.isRoot ? FileKind.ROOT_FOLDER : stat.isDirectory ? FileKind.FOLDER : FileKind.FILE,
+ 			extraClasses: realignNestedChildren ? [...extraClasses, 'align-nest-icon-with-parent-icon'] : extraClasses,
+ 			fileDecorations: this.config.explorer.decorations,
