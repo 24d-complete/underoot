@@ -1,7 +1,21 @@
 diff --git a/src/vs/workbench/browser/parts/editor/editorStatus.ts b/src/vs/workbench/browser/parts/editor/editorStatus.ts
-index 7bcbfe6..d29f5f3 100644
+index 7bcbfe6..06e533b 100644
 --- a/src/vs/workbench/browser/parts/editor/editorStatus.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorStatus.ts
+@@ -347,10 +347,10 @@ class EditorStatus extends Disposable {
+ 	private readonly tabFocusModeElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 	private readonly inputModeElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 	private readonly columnSelectionModeElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+-	private readonly indentationElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
++	// private readonly indentationElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 	private readonly selectionElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+-	private readonly encodingElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+-	private readonly eolElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
++	// private readonly encodingElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
++	// private readonly eolElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 	private readonly languageElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 	private readonly metadataElement = this._register(new MutableDisposable<IStatusbarEntryAccessor>());
+ 
 @@ -517,62 +517,62 @@ class EditorStatus extends Disposable {
  		this.updateElement(this.selectionElement, props, 'status.editor.selection', StatusbarAlignment.RIGHT, 100.5);
  	}
@@ -208,7 +222,7 @@ index 743f9e6..232986d 100644
  
  	override get preventZoom(): boolean {
 diff --git a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
-index bc8534e..94e4b65 100644
+index bc8534e..e98e369 100644
 --- a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
 @@ -5,14 +5,14 @@
@@ -241,15 +255,27 @@ index bc8534e..94e4b65 100644
  import { Event } from '../../../../base/common/event.js';
  import { IExternalUriOpenerService } from '../../externalUriOpener/common/externalUriOpenerService.js';
  import { IHostService } from '../../../services/host/browser/host.js';
-@@ -43,8 +40,6 @@ export const VIEWLET_ID = 'workbench.view.remote';
+@@ -42,17 +39,15 @@ export const VIEWLET_ID = 'workbench.view.remote';
+ 
  export class ForwardedPortsView extends Disposable implements IWorkbenchContribution {
  	private readonly contextKeyListener = this._register(new MutableDisposable<IDisposable>());
- 	private readonly activityBadge = this._register(new MutableDisposable<IDisposable>());
+-	private readonly activityBadge = this._register(new MutableDisposable<IDisposable>());
 -	private entryAccessor: IStatusbarEntryAccessor | undefined;
 -	private hasPortsInSession: boolean = false;
++	// private readonly activityBadge = this._register(new MutableDisposable<IDisposable>());
  
  	constructor(
  		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+ 		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
+ 		@IRemoteExplorerService private readonly remoteExplorerService: IRemoteExplorerService,
+ 		@ITunnelService private readonly tunnelService: ITunnelService,
+-		@IActivityService private readonly activityService: IActivityService,
+-		@IStatusbarService private readonly statusbarService: IStatusbarService,
++		// @IActivityService private readonly activityService: IActivityService,
++		// @IStatusbarService private readonly statusbarService: IStatusbarService,
+ 	) {
+ 		super();
+ 		this._register(Registry.as<IViewsRegistry>(Extensions.ViewsRegistry).registerViewWelcomeContent(TUNNEL_VIEW_ID, {
 @@ -61,23 +56,10 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
  		}));
  		this.enableBadgeAndStatusBar();
