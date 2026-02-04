@@ -149,3 +149,4 @@ We recently conducted a deep-dive analysis of the **PDF Viewer**.
 *   **Explorer Exclusions:** Added LaTeX build artifacts (`.aux`, `.log`, etc.) to the default file exclusions.
 *   **Extension Hiding:** Introduced `explorer.hideFileExtensions` (default: true) and implemented logic to strip extensions in the Explorer view.
 *   **Persistence:** Generated `patches/user/defaults-ready.patch` to ensure these core adjustments are preserved within the Underoot source.
+*   **CI Fix:** Restored missing `icons/` directory and `build_icons.sh` that were accidentally deleted, resolving GitHub Actions failures.
