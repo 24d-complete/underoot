@@ -1,7 +1,126 @@
 diff --git a/src/vs/workbench/browser/parts/editor/editorStatus.ts b/src/vs/workbench/browser/parts/editor/editorStatus.ts
-index 7bcbfe6..9a8a02d 100644
+index 7bcbfe6..d29f5f3 100644
 --- a/src/vs/workbench/browser/parts/editor/editorStatus.ts
 +++ b/src/vs/workbench/browser/parts/editor/editorStatus.ts
+@@ -517,62 +517,62 @@ class EditorStatus extends Disposable {
+ 		this.updateElement(this.selectionElement, props, 'status.editor.selection', StatusbarAlignment.RIGHT, 100.5);
+ 	}
+ 
+-	private updateIndentationElement(text: string | undefined): void {
+-		if (!text) {
+-			this.indentationElement.clear();
+-			return;
+-		}
+-
+-		const editorURI = getCodeEditor(this.editorService.activeTextEditorControl)?.getModel()?.uri;
+-		if (editorURI?.scheme === Schemas.vscodeNotebookCell) {
+-			this.indentationElement.clear();
+-			return;
+-		}
+-
+-		const props: IStatusbarEntry = {
+-			name: localize('status.editor.indentation', "Editor Indentation"),
+-			text,
+-			ariaLabel: text,
+-			tooltip: localize('selectIndentation', "Select Indentation"),
+-			command: `changeEditorIndentation${this.targetWindowId}`
+-		};
+-
+-		this.updateElement(this.indentationElement, props, 'status.editor.indentation', StatusbarAlignment.RIGHT, 100.4);
+-	}
+-
+-	private updateEncodingElement(text: string | undefined): void {
+-		if (!text) {
+-			this.encodingElement.clear();
+-			return;
+-		}
+-
+-		const props: IStatusbarEntry = {
+-			name: localize('status.editor.encoding', "Editor Encoding"),
+-			text,
+-			ariaLabel: text,
+-			tooltip: localize('selectEncoding', "Select Encoding"),
+-			command: 'workbench.action.editor.changeEncoding'
+-		};
+-
+-		this.updateElement(this.encodingElement, props, 'status.editor.encoding', StatusbarAlignment.RIGHT, 100.3);
+-	}
+-
+-	private updateEOLElement(text: string | undefined): void {
+-		if (!text) {
+-			this.eolElement.clear();
+-			return;
+-		}
+-
+-		const props: IStatusbarEntry = {
+-			name: localize('status.editor.eol', "Editor End of Line"),
+-			text,
+-			ariaLabel: text,
+-			tooltip: localize('selectEOL', "Select End of Line Sequence"),
+-			command: 'workbench.action.editor.changeEOL'
+-		};
+-
+-		this.updateElement(this.eolElement, props, 'status.editor.eol', StatusbarAlignment.RIGHT, 100.2);
+-	}
++	// private updateIndentationElement(text: string | undefined): void {
++	// 	if (!text) {
++	// 		this.indentationElement.clear();
++	// 		return;
++	// 	}
++
++	// 	const editorURI = getCodeEditor(this.editorService.activeTextEditorControl)?.getModel()?.uri;
++	// 	if (editorURI?.scheme === Schemas.vscodeNotebookCell) {
++	// 		this.indentationElement.clear();
++	// 		return;
++	// 	}
++
++	// 	const props: IStatusbarEntry = {
++	// 		name: localize('status.editor.indentation', "Editor Indentation"),
++	// 		text,
++	// 		ariaLabel: text,
++	// 		tooltip: localize('selectIndentation', "Select Indentation"),
++	// 		command: `changeEditorIndentation${this.targetWindowId}`
++	// 	};
++
++	// 	this.updateElement(this.indentationElement, props, 'status.editor.indentation', StatusbarAlignment.RIGHT, 100.4);
++	// }
++
++	// private updateEncodingElement(text: string | undefined): void {
++	// 	if (!text) {
++	// 		this.encodingElement.clear();
++	// 		return;
++	// 	}
++
++	// 	const props: IStatusbarEntry = {
++	// 		name: localize('status.editor.encoding', "Editor Encoding"),
++	// 		text,
++	// 		ariaLabel: text,
++	// 		tooltip: localize('selectEncoding', "Select Encoding"),
++	// 		command: 'workbench.action.editor.changeEncoding'
++	// 	};
++
++	// 	this.updateElement(this.encodingElement, props, 'status.editor.encoding', StatusbarAlignment.RIGHT, 100.3);
++	// }
++
++	// private updateEOLElement(text: string | undefined): void {
++	// 	if (!text) {
++	// 		this.eolElement.clear();
++	// 		return;
++	// 	}
++
++	// 	const props: IStatusbarEntry = {
++	// 		name: localize('status.editor.eol', "Editor End of Line"),
++	// 		text,
++	// 		ariaLabel: text,
++	// 		tooltip: localize('selectEOL', "Select End of Line Sequence"),
++	// 		command: 'workbench.action.editor.changeEOL'
++	// 	};
++
++	// 	this.updateElement(this.eolElement, props, 'status.editor.eol', StatusbarAlignment.RIGHT, 100.2);
++	// }
+ 
+ 	private updateLanguageIdElement(text: string | undefined): void {
+ 		if (!text) {
 @@ -642,10 +642,10 @@ class EditorStatus extends Disposable {
  		this.updateTabFocusModeElement(!!this.state.tabFocusMode);
  		this.updateInputModeElement(this.state.inputMode);
@@ -89,10 +208,57 @@ index 743f9e6..232986d 100644
  
  	override get preventZoom(): boolean {
 diff --git a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
-index bc8534e..1c058fe 100644
+index bc8534e..94e4b65 100644
 --- a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
-@@ -69,15 +69,7 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
+@@ -5,14 +5,14 @@
+ import * as nls from '../../../../nls.js';
+ import { Disposable, IDisposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
+ import { IWorkbenchContribution } from '../../../common/contributions.js';
+-import { Extensions, IViewContainersRegistry, IViewsRegistry, ViewContainer, ViewContainerLocation } from '../../../common/views.js';
+-import { IRemoteExplorerService, PORT_AUTO_FALLBACK_SETTING, PORT_AUTO_FORWARD_SETTING, PORT_AUTO_SOURCE_SETTING, PORT_AUTO_SOURCE_SETTING_HYBRID, PORT_AUTO_SOURCE_SETTING_OUTPUT, PORT_AUTO_SOURCE_SETTING_PROCESS, PortsEnablement, TUNNEL_VIEW_CONTAINER_ID, TUNNEL_VIEW_ID } from '../../../services/remote/common/remoteExplorerService.js';
++import { Extensions, IViewsRegistry, ViewContainer } from '../../../common/views.js';
++import { IRemoteExplorerService, PORT_AUTO_FALLBACK_SETTING, PORT_AUTO_FORWARD_SETTING, PORT_AUTO_SOURCE_SETTING, PORT_AUTO_SOURCE_SETTING_HYBRID, PORT_AUTO_SOURCE_SETTING_OUTPUT, PORT_AUTO_SOURCE_SETTING_PROCESS, PortsEnablement, TUNNEL_VIEW_ID } from '../../../services/remote/common/remoteExplorerService.js';
+ import { Attributes, AutoTunnelSource, forwardedPortsFeaturesEnabled, forwardedPortsViewEnabled, makeAddress, mapHasAddressLocalhostOrAllInterfaces, OnPortForward, Tunnel, TunnelCloseReason, TunnelSource } from '../../../services/remote/common/tunnelModel.js';
+ import { ForwardPortAction, OpenPortInBrowserAction, TunnelPanel, TunnelPanelDescriptor, TunnelViewModel, OpenPortInPreviewAction, openPreviewEnabledContext } from './tunnelView.js';
+ import { IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+ import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
+ import { Registry } from '../../../../platform/registry/common/platform.js';
+-import { IStatusbarEntry, IStatusbarEntryAccessor, IStatusbarService, StatusbarAlignment } from '../../../services/statusbar/browser/statusbar.js';
++import { IStatusbarService } from '../../../services/statusbar/browser/statusbar.js';
+ import { UrlFinder } from './urlFinder.js';
+ import Severity from '../../../../base/common/severity.js';
+ import { ConfigurationTarget, IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
+@@ -23,10 +23,7 @@ import { IDebugService } from '../../debug/common/debug.js';
+ import { IRemoteAgentService } from '../../../services/remote/common/remoteAgentService.js';
+ import { isWeb, OperatingSystem } from '../../../../base/common/platform.js';
+ import { ITunnelService, RemoteTunnel, TunnelPrivacyId } from '../../../../platform/tunnel/common/tunnel.js';
+-import { SyncDescriptor } from '../../../../platform/instantiation/common/descriptors.js';
+-import { ViewPaneContainer } from '../../../browser/parts/views/viewPaneContainer.js';
+-import { IActivityService, NumberBadge } from '../../../services/activity/common/activity.js';
+-import { portsViewIcon } from './remoteIcons.js';
++import { IActivityService } from '../../../services/activity/common/activity.js';
+ import { Event } from '../../../../base/common/event.js';
+ import { IExternalUriOpenerService } from '../../externalUriOpener/common/externalUriOpenerService.js';
+ import { IHostService } from '../../../services/host/browser/host.js';
+@@ -43,8 +40,6 @@ export const VIEWLET_ID = 'workbench.view.remote';
+ export class ForwardedPortsView extends Disposable implements IWorkbenchContribution {
+ 	private readonly contextKeyListener = this._register(new MutableDisposable<IDisposable>());
+ 	private readonly activityBadge = this._register(new MutableDisposable<IDisposable>());
+-	private entryAccessor: IStatusbarEntryAccessor | undefined;
+-	private hasPortsInSession: boolean = false;
+ 
+ 	constructor(
+ 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+@@ -61,23 +56,10 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
+ 		}));
+ 		this.enableBadgeAndStatusBar();
+ 		this.enableForwardedPortsFeatures();
+-		if (!this.environmentService.remoteAuthority) {
+-			this._register(Event.once(this.tunnelService.onTunnelOpened)(() => {
+-				this.hasPortsInSession = true;
+-			}));
+-		}
  	}
  
  	private async getViewContainer(): Promise<ViewContainer | null> {
@@ -109,7 +275,7 @@ index bc8534e..1c058fe 100644
  	}
  
  	private async enableForwardedPortsFeatures() {
-@@ -108,22 +100,7 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
+@@ -108,66 +90,7 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
  	}
  
  	private enableBadgeAndStatusBar() {
@@ -129,14 +295,19 @@ index bc8534e..1c058fe 100644
 -				disposable.dispose();
 -			}
 -		});
-+		return;
- 	}
- 
- 	private async updateActivityBadge() {
-@@ -137,16 +114,7 @@ export class ForwardedPortsView extends Disposable implements IWorkbenchContribu
- 	}
- 
- 	private updateStatusBar() {
+-	}
+-
+-	private async updateActivityBadge() {
+-		if (this.remoteExplorerService.tunnelModel.forwarded.size > 0) {
+-			this.activityBadge.value = this.activityService.showViewActivity(TUNNEL_VIEW_ID, {
+-				badge: new NumberBadge(this.remoteExplorerService.tunnelModel.forwarded.size, n => n === 1 ? nls.localize('1forwardedPort', "1 forwarded port") : nls.localize('nForwardedPorts', "{0} forwarded ports", n))
+-			});
+-		} else {
+-			this.activityBadge.clear();
+-		}
+-	}
+-
+-	private updateStatusBar() {
 -		if (!this.environmentService.remoteAuthority && !this.hasPortsInSession) {
 -			// We only want to show the ports status bar entry when the user has taken an action that indicates that they might care about it.
 -			return;
@@ -147,10 +318,31 @@ index bc8534e..1c058fe 100644
 -		} else {
 -			this.entryAccessor.update(this.entry);
 -		}
-+		return;
+-	}
+-
+-	private get entry(): IStatusbarEntry {
+-		let tooltip: string;
+-		const count = this.remoteExplorerService.tunnelModel.forwarded.size + this.remoteExplorerService.tunnelModel.detected.size;
+-		const text = `${count}`;
+-		if (count === 0) {
+-			tooltip = nls.localize('remote.forwardedPorts.statusbarTextNone', "No Ports Forwarded");
+-		} else {
+-			const allTunnels = Array.from(this.remoteExplorerService.tunnelModel.forwarded.values());
+-			allTunnels.push(...Array.from(this.remoteExplorerService.tunnelModel.detected.values()));
+-			tooltip = nls.localize('remote.forwardedPorts.statusbarTooltip', "Forwarded Ports: {0}",
+-				allTunnels.map(forwarded => forwarded.remotePort).join(', '));
+-		}
+-		return {
+-			name: nls.localize('status.forwardedPorts', "Forwarded Ports"),
+-			text: `$(radio-tower) ${text}`,
+-			ariaLabel: tooltip,
+-			tooltip,
+-			command: `${TUNNEL_VIEW_ID}.focus`
+-		};
++		// return;
  	}
+ }
  
- 	private get entry(): IStatusbarEntry {
 diff --git a/src/vs/workbench/contrib/timeline/browser/timeline.contribution.ts b/src/vs/workbench/contrib/timeline/browser/timeline.contribution.ts
 index acf3e73..c8f67b7 100644
 --- a/src/vs/workbench/contrib/timeline/browser/timeline.contribution.ts
