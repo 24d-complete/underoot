@@ -222,7 +222,7 @@ index 743f9e6..232986d 100644
  
  	override get preventZoom(): boolean {
 diff --git a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
-index bc8534e..e98e369 100644
+index bc8534e..343661c 100644
 --- a/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
 +++ b/src/vs/workbench/contrib/remote/browser/remoteExplorer.ts
 @@ -5,14 +5,14 @@
@@ -239,7 +239,7 @@ index bc8534e..e98e369 100644
  import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
  import { Registry } from '../../../../platform/registry/common/platform.js';
 -import { IStatusbarEntry, IStatusbarEntryAccessor, IStatusbarService, StatusbarAlignment } from '../../../services/statusbar/browser/statusbar.js';
-+import { IStatusbarService } from '../../../services/statusbar/browser/statusbar.js';
++// import { IStatusbarService } from '../../../services/statusbar/browser/statusbar.js';
  import { UrlFinder } from './urlFinder.js';
  import Severity from '../../../../base/common/severity.js';
  import { ConfigurationTarget, IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
@@ -251,7 +251,7 @@ index bc8534e..e98e369 100644
 -import { ViewPaneContainer } from '../../../browser/parts/views/viewPaneContainer.js';
 -import { IActivityService, NumberBadge } from '../../../services/activity/common/activity.js';
 -import { portsViewIcon } from './remoteIcons.js';
-+import { IActivityService } from '../../../services/activity/common/activity.js';
++// import { IActivityService } from '../../../services/activity/common/activity.js';
  import { Event } from '../../../../base/common/event.js';
  import { IExternalUriOpenerService } from '../../externalUriOpener/common/externalUriOpenerService.js';
  import { IHostService } from '../../../services/host/browser/host.js';
