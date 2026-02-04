@@ -12,10 +12,29 @@ index a6e7322..2584b42 100644
  			side: 'right',
  			showSlider: 'mouseover',
 diff --git a/src/vs/platform/quickinput/browser/quickInputController.ts b/src/vs/platform/quickinput/browser/quickInputController.ts
-index a3a85e3..0f96fef 100644
+index a3a85e3..c6b0fc4 100644
 --- a/src/vs/platform/quickinput/browser/quickInputController.ts
 +++ b/src/vs/platform/quickinput/browser/quickInputController.ts
-@@ -859,7 +859,7 @@ export class QuickInputController extends Disposable {
+@@ -53,7 +53,6 @@ export class QuickInputController extends Disposable {
+ 	private idPrefix: string;
+ 	private ui: QuickInputUI | undefined;
+ 	private dimension?: dom.IDimension;
+-	private titleBarOffset?: number;
+ 	private enabled = true;
+ 	private readonly onDidAcceptEmitter = this._register(new Emitter<void>());
+ 	private readonly onDidCustomEmitter = this._register(new Emitter<void>());
+@@ -846,9 +845,8 @@ export class QuickInputController extends Disposable {
+ 		this.hide(reason);
+ 	}
+ 
+-	layout(dimension: dom.IDimension, titleBarOffset: number): void {
++	layout(dimension: dom.IDimension, _titleBarOffset: number): void {
+ 		this.dimension = dimension;
+-		this.titleBarOffset = titleBarOffset;
+ 		this.updateLayout();
+ 	}
+ 
+@@ -859,7 +857,7 @@ export class QuickInputController extends Disposable {
  			style.width = width + 'px';
  
  			// Position
