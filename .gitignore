@@ -18,15 +18,22 @@ sourcemaps/
 stores/snapcraft/insider/*.snap
 stores/snapcraft/stable/*.snap
 
-logs_55500464554/
-
-# Underoot temporary and test files
-sample_diffs_underoot_overleaf/
-texlive_installer/
+/logs_55500464554/
 *.log
+*.aux
+*.pdf
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
 run_log*.txt
+launch_log.txt
 tlmgr_output.txt
 prepare_output.log
+texlive_installer/
+sample_diffs_underoot_overleaf/
 patches/user/*.backup*
 test.*
 test_bib.*

@@ -27,9 +27,15 @@ Concept: An adversarial AI agent designed to critique papers pre-submission.
 Functionality: Users select a persona (e.g., "Pedantic IEEE Reviewer," "Grumpy Thesis Committee Member"). The local LLM scans the text for logical fallacies, undefined acronyms, weak argumentation, and missing citations.
 
 
-Semantic Reference Graphing:
+Semantic Reference Graphing & "Live RAG":
 Concept: Moving beyond flat bibliographies.
-Functionality: A visual node-graph (similar to Obsidian/ResearchRabbit) that maps citation relationships. It proactively highlights relevant papers the user has missed based on the semantic context of the draft.
+Functionality:
+    *   **Visual Node Graph**: Maps citation relationships (similar to ResearchRabbit).
+    *   **Contextual Research Assistant (Live RAG)**:
+        *   The editor monitors the paragraph you are writing (e.g., "Transformers have limited context windows...").
+        *   **Backend**: It quietly queries Open Access APIs (Semantic Scholar/CORE) for relevant papers.
+        *   **Local RAG**: It downloads abstracts to the local machine, vectorizes them on-the-fly, and offers "Ghost Completions" or sidebar suggestions with real citations.
+        *   *Benefit*: "It feels like having a PhD research assistant whispering citations in your ear."
 
 
 Adaptive Document Export ("Thesis Splitter"):
