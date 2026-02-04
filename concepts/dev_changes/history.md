@@ -151,3 +151,4 @@ We recently conducted a deep-dive analysis of the **PDF Viewer**.
 *   **Persistence:** Generated `patches/user/defaults-ready.patch` to ensure these core adjustments are preserved within the Underoot source.
 *   **CI Fix:** Restored missing `icons/` directory and `build_icons.sh` that were accidentally deleted, resolving GitHub Actions failures.
 *   **Cleanup:** Removed legacy `patches/user/ui-cleanup.patch` which was causing merge conflicts and build failures in the CI pipeline.
+*   **Build Fix:** Resolved TypeScript compilation error in `quickInputController.ts` by removing the unused `titleBarOffset` variable.
