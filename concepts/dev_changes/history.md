@@ -40,6 +40,12 @@ gitGraph
     commit id: "Google Docs Vision"
     commit id: "Todo Interface"
     commit id: "Current HEAD" type: HIGHLIGHT
+
+    %% The Windows Crisis
+    checkout main
+    branch windows-fixing-unTexLiveOnFly
+    checkout windows-fixing-unTexLiveOnFly
+    commit id: "TexLiveOnFly Crisis" type: HIGHLIGHT
 ```
 
 ---
