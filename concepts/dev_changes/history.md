@@ -152,3 +152,19 @@ We recently conducted a deep-dive analysis of the **PDF Viewer**.
 *   **CI Fix:** Restored missing `icons/` directory and `build_icons.sh` that were accidentally deleted, resolving GitHub Actions failures.
 *   **Cleanup:** Removed legacy `patches/user/ui-cleanup.patch` which was causing merge conflicts and build failures in the CI pipeline.
 *   **Build Fix:** Resolved TypeScript compilation error in `quickInputController.ts` by removing the unused `titleBarOffset` variable.
+
+## 🐛 The "TexLiveOnFly" Windows Crisis
+*Date: **Feb 7, 2026***
+**Branch:** `windows-fixing-unTexLiveOnFly`
+
+We discovered a critical build failure on Windows where the compilation wrapper scripts for the `texliveonfly` package (used for auto-installing missing TeX packages) were incompatible with the Windows shell environment.
+
+### The Problem
+*   The build system was trying to execute a shell script (`texliveonfly_wrapper.sh`) directly on Windows.
+*   The underlying `texliveonfly` utility was missing from the bundled environment or not being correctly resolved.
+
+### The Objective
+*   **Infrastructure:** Implement a proper Windows-compatible batch wrapper (`texliveonfly_wrapper.bat`).
+*   **Missing Dependency:** Properly inject the missing `texliveonfly.py` script into the source tree.
+*   **Configuration:** Update the build logic (`prepare_vscode.sh`) to detect the OS and inject the correct wrapper path into `latexmk` configuration.
+
