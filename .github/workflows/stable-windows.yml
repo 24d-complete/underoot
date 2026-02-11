@@ -15,12 +15,12 @@ on:
   repository_dispatch:
     types: [stable]
   push:
-    branches: [ master, main, optimize-sed-apply-patch ]
+    branches: [ master, main, 'optimize-**' ]
     paths-ignore:
     - '**/*.md'
     - 'upstream/*.json'
   pull_request:
-    branches: [ master, main, optimize-sed-apply-patch ]
+    branches: [ master, main, 'optimize-**' ]
     paths-ignore:
     - '**/*.md'
 
@@ -29,7 +29,7 @@ env:
   ASSETS_REPOSITORY: ${{ github.repository }}
   BINARY_NAME: underoot
   GH_REPO_PATH: ${{ github.repository }}
-  GITHUB_BRANCH: main
+  GITHUB_BRANCH: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.ref_name }}
   ORG_NAME: ${{ github.repository_owner }}
   OS_NAME: windows
   VERSIONS_REPOSITORY: ${{ github.repository_owner }}/versions
