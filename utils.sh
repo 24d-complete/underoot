@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-sed --version &> /dev/null
-IS_GNU_SED_EXIT_CODE=$?
+if sed --version &> /dev/null; then
+  IS_GNU_SED_EXIT_CODE=0
+else
+  IS_GNU_SED_EXIT_CODE=1
+fi
 
 APP_NAME="${APP_NAME:-VSCodium}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
