@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+sed --version &> /dev/null
+IS_GNU_SED_EXIT_CODE=$?
+
 APP_NAME="${APP_NAME:-VSCodium}"
 APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 ASSETS_REPOSITORY="${ASSETS_REPOSITORY:-VSCodium/vscodium}"
@@ -24,15 +27,17 @@ apply_patch() {
 
   cp $1{,.bak}
 
-  replace "s|!!APP_NAME!!|${APP_NAME}|g" "$1"
-  replace "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" "$1"
-  replace "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" "$1"
-  replace "s|!!BINARY_NAME!!|${BINARY_NAME}|g" "$1"
-  replace "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" "$1"
-  replace "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" "$1"
-  replace "s|!!ORG_NAME!!|${ORG_NAME}|g" "$1"
-  replace "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" "$1"
-  replace "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" "$1"
+  _sed_i \
+    -e "s|!!APP_NAME!!|${APP_NAME}|g" \
+    -e "s|!!APP_NAME_LC!!|${APP_NAME_LC}|g" \
+    -e "s|!!ASSETS_REPOSITORY!!|${ASSETS_REPOSITORY}|g" \
+    -e "s|!!BINARY_NAME!!|${BINARY_NAME}|g" \
+    -e "s|!!GH_REPO_PATH!!|${GH_REPO_PATH}|g" \
+    -e "s|!!GLOBAL_DIRNAME!!|${GLOBAL_DIRNAME}|g" \
+    -e "s|!!ORG_NAME!!|${ORG_NAME}|g" \
+    -e "s|!!RELEASE_VERSION!!|${RELEASE_VERSION}|g" \
+    -e "s|!!TUNNEL_APP_NAME!!|${TUNNEL_APP_NAME}|g" \
+    "$1"
 
   if ! git apply --ignore-whitespace "$1"; then
     echo failed to apply patch "$1" >&2
@@ -45,25 +50,25 @@ apply_patch() {
 exists() { type -t "$1" &> /dev/null; }
 
 is_gnu_sed() {
-  sed --version &> /dev/null
+  return ${IS_GNU_SED_EXIT_CODE}
 }
 
-replace() {
-  if is_gnu_sed; then
-    sed -i -E "${1}" "${2}"
-  else
-    sed -i '' -E "${1}" "${2}"
-  fi
-}
+if is_gnu_sed; then
+  _sed_i() {
+    sed -i -E "$@"
+  }
+else
+  _sed_i() {
+    sed -i '' -E "$@"
+  }
+fi
 
 if ! exists gsed; then
-  if is_gnu_sed; then
-    function gsed() {
-      sed -i -E "$@"
-    }
-  else
-    function gsed() {
-      sed -i '' -E "$@"
-    }
-  fi
+  gsed() {
+    _sed_i "$@"
+  }
 fi
+
+replace() {
+  _sed_i "$@"
+}
