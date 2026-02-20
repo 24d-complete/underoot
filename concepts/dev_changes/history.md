@@ -174,3 +174,11 @@ We discovered a critical build failure on Windows where the compilation wrapper 
 *   **Missing Dependency:** Properly inject the missing `texliveonfly.py` script into the source tree.
 *   **Configuration:** Update the build logic (`prepare_vscode.sh`) to detect the OS and inject the correct wrapper path into `latexmk` configuration.
 
+### 💡 The Pivot: Tectonic & The Custom Engine
+*Date: **Feb 20, 2026***
+Instead of continuing to battle `texliveonfly` and cross-platform wrapper scripts, a strategic decision was made to **abandon `texliveonfly` entirely**. 
+
+**The New Direction:**
+*   **Tectonic Core:** We are pivoting to [Tectonic](https://tectonic-typesetting.github.io/) (or a similar modern engine) as our foundational typesetting backend.
+*   **Custom Underoot Engine:** We anticipate developing a custom version/bundle of Tectonic to guarantee support for all CTAN packages, comprehensive font coverage, and seamless integration with the `latex-workshop` extension in VS Code.
+*   **Why:** Tectonic's Rust-based, self-contained binary and built-in on-the-fly package downloading align perfectly with the Underoot Vision: a true zero-config, zero-friction local writing ecosystem free from the brittleness of legacy TeX Live configurations.
