@@ -15,7 +15,7 @@ on:
   repository_dispatch:
     types: [stable]
   push:
-    branches: [ master, main, 'feature/**', 'Latex-Workshop-Embedded' ]
+    branches: [ master, main, 'feature/**', 'Latex-Workshop-Embedded', 'windows-fixing-unTexLiveOnFly' ]
     paths-ignore:
     - '**/*.md'
     - 'upstream/*.json'

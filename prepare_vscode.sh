@@ -156,9 +156,45 @@ if [[ -d "extensions/latex-workshop" ]]; then
 fi
 
 # No renaming (bypass) needed.
-# No renaming (bypass) needed.
 # The build system will see 'vscode/extensions/latex-workshop/package.json' and 'node_modules'
 # and bundle them into the final artifact automatically.
+
+# Apply extension source overlays (custom modules that replace/extend VSIX originals)
+if [[ -d "../overlays/latex-workshop" ]]; then
+  echo ">>> Applying LaTeX Workshop overlays..."
+  cp -rp ../overlays/latex-workshop/* extensions/latex-workshop/
+  echo "SUCCESS: Overlays applied."
+fi
+
+# Download Tectonic binary for the target platform
+echo ">>> Downloading Tectonic binary..."
+TECTONIC_VERSION="0.15.0"
+TECTONIC_BASE_URL="https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}"
+mkdir -p bin
+
+if [[ "${OS_NAME}" == "windows" ]]; then
+  curl -L -o /tmp/tectonic.zip "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-x86_64-pc-windows-msvc.zip"
+  python3 -c "import zipfile; zipfile.ZipFile('/tmp/tectonic.zip').extractall('bin/')" 2>/dev/null || \
+  python -c "import zipfile; zipfile.ZipFile('/tmp/tectonic.zip').extractall('bin/')"
+  rm -f /tmp/tectonic.zip
+elif [[ "${OS_NAME}" == "osx" ]]; then
+  if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+    curl -L "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-aarch64-apple-darwin.tar.gz" | tar -xz -C bin/
+  else
+    curl -L "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-x86_64-apple-darwin.tar.gz" | tar -xz -C bin/
+  fi
+elif [[ "${OS_NAME}" == "linux" ]]; then
+  if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
+    curl -L "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-aarch64-unknown-linux-musl.tar.gz" | tar -xz -C bin/
+  else
+    curl -L "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar -xz -C bin/
+  fi
+fi
+
+# Also copy to extension bin for direct access
+mkdir -p extensions/latex-workshop/bin
+cp bin/tectonic* extensions/latex-workshop/bin/ 2>/dev/null || true
+echo "SUCCESS: Tectonic binary downloaded."
 
 { set +x; } 2>/dev/null
 

@@ -1,0 +1,83 @@
+diff --git a/src/main.ts b/src/main.ts
+index a755815..2028512 100644
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -57,14 +57,30 @@ if (args['sandbox'] &&
+ }
+ 
+ // Set userData path before app 'ready' event
+-const userDataPath = getUserDataPath(args, product.nameShort ?? 'code-oss-dev');
++const appUserDataPath = getUserDataPath(args, product.nameShort ?? 'code-oss-dev');
+ if (process.platform === 'win32') {
+-	const userDataUNCHost = getUNCHost(userDataPath);
++	const userDataUNCHost = getUNCHost(appUserDataPath);
+ 	if (userDataUNCHost) {
+ 		addUNCHostToAllowlist(userDataUNCHost); // enables to use UNC paths in userDataPath
+ 	}
+ }
+-app.setPath('userData', userDataPath);
++app.setPath('userData', appUserDataPath);
++
++// Read user settings for Electron flags
++try {
++	const settingsPath = path.join(appUserDataPath, 'User', 'settings.json');
++	if (fs.existsSync(settingsPath)) {
++		const settings = parse(fs.readFileSync(settingsPath).toString());
++		if (settings['latex-workshop.view.pdf.gpuRasterization']) {
++			app.commandLine.appendSwitch('enable-gpu-rasterization');
++		}
++		if (settings['latex-workshop.view.pdf.lcdTextRendering'] === false) {
++			app.commandLine.appendSwitch('disable-lcd-text');
++		}
++	}
++} catch (e) {
++	// Ignore
++}
+ 
+ // Resolve code cache path
+ const codeCachePath = getCodeCachePath();
+@@ -92,7 +108,7 @@ perf.mark('code/didStartCrashReporter');
+ // location outside of the portable directory
+ // (https://github.com/microsoft/vscode/issues/56651)
+ if (portable.isPortable) {
+-	app.setAppLogsPath(path.join(userDataPath, 'logs'));
++	app.setAppLogsPath(path.join(appUserDataPath, 'logs'));
+ }
+ 
+ // Register custom schemes with privileges
+@@ -111,7 +127,7 @@ protocol.registerSchemesAsPrivileged([
+ registerListeners();
+ 
+ function resolveUserProduct() {
+-	const userProductPath = path.join(userDataPath, 'product.json');
++	const userProductPath = path.join(appUserDataPath, 'product.json');
+ 
+ 	try {
+ 		// Assign the product configuration to the global scope
+@@ -140,7 +156,7 @@ if (userLocale) {
+ 		userLocale,
+ 		osLocale,
+ 		commit: product.commit,
+-		userDataPath,
++		userDataPath: appUserDataPath,
+ 		nlsMetadataPath: import.meta.dirname
+ 	});
+ }
+@@ -648,7 +664,7 @@ function getCodeCachePath(): string | undefined {
+ 		return undefined;
+ 	}
+ 
+-	return path.join(userDataPath, 'CachedData', commit);
++	return path.join(appUserDataPath, 'CachedData', commit);
+ }
+ 
+ async function mkdirpIgnoreError(dir: string | undefined): Promise<string | undefined> {
+@@ -728,7 +744,7 @@ async function resolveNlsConfiguration(): Promise<INLSConfiguration> {
+ 		userLocale,
+ 		osLocale,
+ 		commit: product.commit,
+-		userDataPath,
++		userDataPath: appUserDataPath,
+ 		nlsMetadataPath: import.meta.dirname
+ 	});
+ }
