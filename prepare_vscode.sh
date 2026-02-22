@@ -173,10 +173,10 @@ TECTONIC_BASE_URL="https://github.com/tectonic-typesetting/tectonic/releases/dow
 mkdir -p bin
 
 if [[ "${OS_NAME}" == "windows" ]]; then
-  curl -L -o /tmp/tectonic.zip "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-x86_64-pc-windows-msvc.zip"
-  python3 -c "import zipfile; zipfile.ZipFile('/tmp/tectonic.zip').extractall('bin/')" 2>/dev/null || \
-  python -c "import zipfile; zipfile.ZipFile('/tmp/tectonic.zip').extractall('bin/')"
-  rm -f /tmp/tectonic.zip
+  curl -L -o tectonic.zip "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-x86_64-pc-windows-msvc.zip"
+  python3 -c "import zipfile; zipfile.ZipFile('tectonic.zip').extractall('bin/')" 2>/dev/null || \
+  python -c "import zipfile; zipfile.ZipFile('tectonic.zip').extractall('bin/')"
+  rm -f tectonic.zip
 elif [[ "${OS_NAME}" == "osx" ]]; then
   if [[ "${VSCODE_ARCH}" == "arm64" ]]; then
     curl -L "${TECTONIC_BASE_URL}/tectonic-${TECTONIC_VERSION}-aarch64-apple-darwin.tar.gz" | tar -xz -C bin/
