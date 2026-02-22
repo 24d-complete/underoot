@@ -1,5 +1,5 @@
 diff --git a/src/main.ts b/src/main.ts
-index a755815..2028512 100644
+index a755815..5e810a9 100644
 --- a/src/main.ts
 +++ b/src/main.ts
 @@ -57,14 +57,30 @@ if (args['sandbox'] &&
@@ -22,7 +22,7 @@ index a755815..2028512 100644
 +try {
 +	const settingsPath = path.join(appUserDataPath, 'User', 'settings.json');
 +	if (fs.existsSync(settingsPath)) {
-+		const settings = parse(fs.readFileSync(settingsPath).toString());
++		const settings: any = parse(fs.readFileSync(settingsPath).toString());
 +		if (settings['latex-workshop.view.pdf.gpuRasterization']) {
 +			app.commandLine.appendSwitch('enable-gpu-rasterization');
 +		}
